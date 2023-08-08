@@ -1,5 +1,6 @@
 package ru.develop.turbin.scraper.rest;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,22 +10,13 @@ import ru.develop.turbin.scraper.service.CaseScraperService;
 
 
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 public class ScraperController {
 
-    private CaseScraperService scraper;
-    private HealthCheckService healthCheckService;
-    private AllCasesSraperService allCasesSraperService;
-
-    @Autowired
-    public void setScraper(CaseScraperService scraper) {
-        this.scraper = scraper;
-    }
-
-    @Autowired
-    public void setHealthCheckService(HealthCheckService healthCheckService) {
-        this.healthCheckService = healthCheckService;
-    }
+    private final CaseScraperService scraper;
+    private final HealthCheckService healthCheckService;
+    private final AllCasesSraperService allCasesSraperService;
 
     @PostMapping("/scrape")
     public void scrapeCase(@RequestBody String caseNumber) {

@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import ru.develop.turbin.scraper.entity.CaseEventEntity;
 import ru.develop.turbin.scraper.entity.CourtCaseEntity;
 
 import java.sql.PreparedStatement;
@@ -78,5 +79,18 @@ public class CourtCaseRepository {
         log.info("Получены все номера дел для скрейпинга");
 
         return caseNumbers;
+    }
+
+    public void updateCaseLinkAndIsScrappedByCaseId(CourtCaseEntity caseEntity) {
+        jdbcTemplate.update("update court_case " +
+                        "set " +
+                        "case_link = ?, " +
+                        "is_scraped = ? " +
+                        "where " +
+                        "case_id = ?",
+                caseEntity.getCaseLink(),
+                caseEntity.getIsScraped(),
+                caseEntity.getCaseId()
+        );
     }
 }
