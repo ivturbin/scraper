@@ -85,7 +85,8 @@ public class CourtCaseRepository {
         jdbcTemplate.update("update court_case " +
                         "set " +
                         "case_link = ?, " +
-                        "is_scraped = ? " +
+                        "is_scraped = ?, " +
+                        "modify_dttm = now() " +
                         "where " +
                         "case_id = ?",
                 caseEntity.getCaseLink(),
