@@ -123,9 +123,9 @@ public class CaseScraperService {
 
 
         } catch (NoSuchElementException e) {
-            log.error("Ошибка поиска элемента на странице: {}", e.getLocalizedMessage());
+            log.error("Ошибка поиска элемента на странице, дело {}: {}", caseNumber, e.getLocalizedMessage());
         } catch (RuntimeException e) {
-            log.error("Ошибка: " + e.getLocalizedMessage());
+            log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
         }
     }
 
