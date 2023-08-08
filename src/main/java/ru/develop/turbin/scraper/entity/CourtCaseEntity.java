@@ -10,11 +10,11 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourtCaseEntity {
-private Long caseId;
-private Long case1CId;
-private String caseNumber;
-private OffsetDateTime createDttm;
-private OffsetDateTime modifyDttm;
-private String caseLink;
-private Boolean isScraped;
+    private Long caseId;
+    private String caseNumber;
+    private OffsetDateTime createDttm;
+    private OffsetDateTime modifyDttm;
+    private String caseLink;
+    private Boolean isScraped;
+    private String case1CId;
 }
