@@ -24,12 +24,12 @@ public class CourtCaseRepository {
     public CourtCaseEntity getById(Long caseId) {
         return jdbcTemplate.queryForObject("select * from court_case where case_id = ?",
                    (rs, rowNum) -> new CourtCaseEntity(rs.getLong(1),
-                        rs.getLong(2),
-                        rs.getString(3),
-                        rs.getTimestamp(4).toInstant().atOffset(ZoneOffset.UTC),
-                        rs.getTimestamp(5).toInstant().atOffset(ZoneOffset.UTC),
-                        rs.getString(6),
-                        rs.getBoolean(7)),
+                           rs.getString(2),
+                           rs.getTimestamp(3).toInstant().atOffset(ZoneOffset.UTC),
+                           rs.getTimestamp(4).toInstant().atOffset(ZoneOffset.UTC),
+                           rs.getString(5),
+                           rs.getBoolean(6),
+                           rs.getString(7)),
                 caseId);
     }
 
@@ -37,12 +37,12 @@ public class CourtCaseRepository {
         try {
             CourtCaseEntity courtCaseEntity = jdbcTemplate.queryForObject("select * from court_case where case_number = ?",
                     (rs, rowNum) -> new CourtCaseEntity(rs.getLong(1),
-                            rs.getLong(2),
-                            rs.getString(3),
+                            rs.getString(2),
+                            rs.getTimestamp(3).toInstant().atOffset(ZoneOffset.UTC),
                             rs.getTimestamp(4).toInstant().atOffset(ZoneOffset.UTC),
-                            rs.getTimestamp(5).toInstant().atOffset(ZoneOffset.UTC),
-                            rs.getString(6),
-                            rs.getBoolean(7)),
+                            rs.getString(5),
+                            rs.getBoolean(6),
+                            rs.getString(7)),
                     caseNumber);
             log.info("Дело {} найдено в БД", caseNumber);
             return courtCaseEntity;
