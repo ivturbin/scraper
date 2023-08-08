@@ -2,10 +2,7 @@ package ru.develop.turbin.scraper.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.develop.turbin.scraper.service.AllCasesSraperService;
 import ru.develop.turbin.scraper.service.HealthCheckService;
 import ru.develop.turbin.scraper.service.CaseScraperService;
@@ -29,8 +26,8 @@ public class ScraperController {
         this.healthCheckService = healthCheckService;
     }
 
-    @PostMapping("/scrape/{caseNumber}")
-    public void scrapeCase(@PathVariable("caseNumber") String caseNumber) {
+    @PostMapping("/scrape")
+    public void scrapeCase(@RequestBody String caseNumber) {
         log.info("/scrape/{}", caseNumber);
         scraper.scrapeCase(caseNumber);
     }
