@@ -55,7 +55,7 @@ public class CourtCaseRepository {
     public Long save(CourtCaseEntity caseEntity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String insertSql = "INSERT INTO court_case " +
-                "(case_number, case_link, is_scrapped) " +
+                "(case_number, case_link, is_scraped) " +
                 "VALUES (?, ?, ?)";
 
         jdbcTemplate.update(connection -> {
@@ -72,7 +72,7 @@ public class CourtCaseRepository {
     }
 
     public List<String> getAllNumbersToScrape() {
-        List<String> caseNumbers = jdbcTemplate.query("select case_number from court_case where is_scrapped",
+        List<String> caseNumbers = jdbcTemplate.query("select case_number from court_case where is_scraped",
                 (rs, rowNum) ->
                 rs.getString(1));
         log.info("Получены все номера дел для скрейпинга");

@@ -8,18 +8,18 @@ create table public.court_case
     create_dttm timestamp with time zone default now(),
     modify_dttm timestamp with time zone default now(),
     case_link   text,
-    is_scrapped boolean
+    is_scraped boolean
 );
 
-comment on column public.court_case.case_id is 'Внутренний идентификатор судебного дела';
+comment on column public.court_case.case_id is 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ';
 
-comment on column public.court_case.case_1c_id is 'Идентификатор судебного дела в системе 1С:Бухгалтерия';
+comment on column public.court_case.case_1c_id is 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1пїЅ:пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
 
-comment on column public.court_case.case_number is 'Номер судебного дела';
+comment on column public.court_case.case_number is 'пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ';
 
-comment on column public.court_case.case_link is 'Ссылка на страницу с информацией о судебном деле';
+comment on column public.court_case.case_link is 'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ';
 
-comment on column public.court_case.is_scrapped is 'Данные по судебному делу необходимо получать с сайта';
+comment on column public.court_case.is_scraped is 'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ';
 
 alter table public.court_case
     owner to "user";
