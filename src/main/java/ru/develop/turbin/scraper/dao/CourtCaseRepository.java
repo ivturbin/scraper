@@ -81,6 +81,19 @@ public class CourtCaseRepository {
         return caseNumbers;
     }
 
+    public String getNumberToScrape() {
+        String caseNumber = jdbcTemplate.queryForObject("select case_number " +
+                        "from court_case " +
+                        "where is_scraped " +
+                        "order by updated is not null, updated, create_dttm desc " +
+                        "limit 1",
+                (rs, rowNum) ->
+                        rs.getString(1));
+        log.info("Получен номер дела {} для скрейпинга", caseNumber);
+
+        return caseNumber;
+    }
+
     public void updateCaseLinkAndIsScrappedByCaseId(CourtCaseEntity caseEntity) {
         jdbcTemplate.update("update court_case " +
                         "set " +
