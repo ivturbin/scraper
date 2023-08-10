@@ -130,13 +130,6 @@ public class CaseScraperService {
     }
 
     public void scrapeCases(List<String> caseNumbers) {
-        caseNumbers.forEach(number -> {
-            scrapeCase(number);
-            try {
-                Thread.sleep(120000);
-            } catch (InterruptedException e) {
-                log.error("Ошибка ожидания между скрейпингом");
-            }
-        });
+
     }
 }
