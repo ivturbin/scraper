@@ -1,10 +1,11 @@
-package ru.develop.turbin.scraper.service;
+package ru.develop.turbin.scraper.service.scraping;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.dao.CourtCaseRepository;
+import ru.develop.turbin.scraper.service.scraping.CaseScraperService;
 
 import java.util.List;
 

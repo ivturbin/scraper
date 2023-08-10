@@ -1,4 +1,4 @@
-package ru.develop.turbin.scraper.service.parser;
+package ru.develop.turbin.scraper.service.parsing;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

@@ -1,4 +1,4 @@
-package ru.develop.turbin.scraper.service.parser;
+package ru.develop.turbin.scraper.service.parsing;
 
 import io.micrometer.common.util.StringUtils;
 import org.jsoup.nodes.Element;

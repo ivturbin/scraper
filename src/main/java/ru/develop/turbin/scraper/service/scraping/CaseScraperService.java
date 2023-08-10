@@ -1,4 +1,4 @@
-package ru.develop.turbin.scraper.service;
+package ru.develop.turbin.scraper.service.scraping;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +17,9 @@ import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.model.CaseHeader;
 import ru.develop.turbin.scraper.model.CaseItem;
 import ru.develop.turbin.scraper.model.ParsedInfoModel;
-import ru.develop.turbin.scraper.service.parser.HeaderParser;
-import ru.develop.turbin.scraper.service.parser.ItemParser;
+import ru.develop.turbin.scraper.service.ParsedInfoProcessor;
+import ru.develop.turbin.scraper.service.parsing.HeaderParser;
+import ru.develop.turbin.scraper.service.parsing.ItemParser;
 
 import java.time.Duration;
 import java.util.HashMap;

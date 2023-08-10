@@ -3,9 +3,8 @@ package ru.develop.turbin.scraper.rest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.develop.turbin.scraper.service.ScraperFacade;
+import ru.develop.turbin.scraper.service.scraping.ScraperFacade;
 import ru.develop.turbin.scraper.service.HealthCheckService;
-import ru.develop.turbin.scraper.service.CaseScraperService;
 
 
 @RestController
