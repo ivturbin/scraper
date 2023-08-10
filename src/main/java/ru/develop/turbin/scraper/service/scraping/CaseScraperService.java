@@ -4,11 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.model.CaseHeader;
 import ru.develop.turbin.scraper.model.CaseItem;
 import ru.develop.turbin.scraper.model.ParsedInfoModel;
+import ru.develop.turbin.scraper.service.ErrorHandler;
 import ru.develop.turbin.scraper.service.ParsedInfoProcessor;
 import ru.develop.turbin.scraper.service.parsing.HeaderParser;
 import ru.develop.turbin.scraper.service.parsing.ItemParser;
@@ -37,6 +34,7 @@ public class CaseScraperService {
     private final HeaderParser headerParser;
     private final ItemParser itemParser;
     private final ParsedInfoProcessor parsedInfoProcessor;
+    private final ErrorHandler errorHandler;
 
     @Value("${configuration.main_url}")
     private String url;
@@ -56,7 +54,15 @@ public class CaseScraperService {
             searchButton.click();
 
             //WebElement caseRef = driver.findElement(By.xpath("//a[@class='num_case']"));
-            WebElement caseRef = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='num_case']")));
+            WebElement caseRef = null;
+            try {
+                caseRef = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='num_case']")));
+            } catch (TimeoutException e) {
+                WebElement noResults = driver.findElement(By.xpath("//div[@class='b-noResults']"));
+                log.error("Дело {} не найдено в источнике", caseNumber);
+                errorHandler.skipCase(caseNumber);
+                return;
+            }
 
             log.info("Дело {} найдено в источнике", caseNumber);
 

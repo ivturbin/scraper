@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.develop.turbin.scraper.entity.CaseEventEntity;
 import ru.develop.turbin.scraper.entity.CourtCaseEntity;
 
 import java.sql.PreparedStatement;
@@ -105,6 +104,17 @@ public class CourtCaseRepository {
                 caseEntity.getCaseLink(),
                 caseEntity.getIsScraped(),
                 caseEntity.getCaseId()
+        );
+    }
+
+    public void markUpdated(String caseNumber) {
+        jdbcTemplate.update("update court_case " +
+                        "set " +
+                        "updated = now(), " +
+                        "modify_dttm = now() " +
+                        "where " +
+                        "case_number = ?",
+                caseNumber
         );
     }
 }
