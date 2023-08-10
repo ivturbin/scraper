@@ -110,7 +110,7 @@ public class ParsedInfoProcessor {
 
             caseEntity.setCaseLink(parsedInfoModel.getCaseLink());
             caseEntity.setIsScraped(Boolean.TRUE);
-            courtCaseRepository.updateCaseLinkAndIsScrappedByCaseId(caseEntity);
+            courtCaseRepository.updateCase(caseEntity);
         }
 
         caseEntity.setCaseId(courtCaseId);

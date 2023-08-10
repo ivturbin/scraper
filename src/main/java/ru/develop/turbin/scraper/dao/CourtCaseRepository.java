@@ -93,12 +93,13 @@ public class CourtCaseRepository {
         return caseNumber;
     }
 
-    public void updateCaseLinkAndIsScrappedByCaseId(CourtCaseEntity caseEntity) {
+    public void updateCase(CourtCaseEntity caseEntity) {
         jdbcTemplate.update("update court_case " +
                         "set " +
                         "case_link = ?, " +
                         "is_scraped = ?, " +
-                        "modify_dttm = now() " +
+                        "modify_dttm = now(), " +
+                        "updated = now() " +
                         "where " +
                         "case_id = ?",
                 caseEntity.getCaseLink(),
