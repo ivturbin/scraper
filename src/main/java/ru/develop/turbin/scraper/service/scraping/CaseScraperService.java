@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -74,21 +75,17 @@ public class CaseScraperService {
             List<WebElement> buttons = driver.findElements(By.xpath("//i[@class='b-sicon']"));
             buttons.forEach(WebElement::click);
 
-            String headerClassName = "b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded";
+            String headerExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded";
+            String headerNotExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break";
 
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded']")));
-            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
+            //wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded']")));
 
-//            List<WebElement> header = driver.findElements(By.xpath("//div[@class='b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded']"));
-//            List<WebElement> header2 = driver.findElements(By.cssSelector(".b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded"));
-
-            //Document document = Jsoup.parse(driver.getPageSource());
-            //Elements header = document.getElementsByClass("b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded");
-            //Elements header = document.selectXpath("//div[@class='b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded']");
-            //Elements headers = document.select("." + headerClassName);
+            wait.until(driver -> driver
+                    .findElements(By.xpath("//div[@class='" + headerNotExpandedClassName + "']"))
+                    .isEmpty());
 
             List<WebElement> headerWebElements = (List<WebElement>) ((JavascriptExecutor) driver)
-                    .executeScript("return document.getElementsByClassName('" + headerClassName + "');");
+                    .executeScript("return document.getElementsByClassName('" + headerExpandedClassName + "');");
 
             //TODO писать ошибку в БД
             if (headerWebElements.isEmpty()) {
