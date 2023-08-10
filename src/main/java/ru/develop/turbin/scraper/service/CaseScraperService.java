@@ -128,8 +128,4 @@ public class CaseScraperService {
             log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
         }
     }
-
-    public void scrapeCases(List<String> caseNumbers) {
-
-    }
 }

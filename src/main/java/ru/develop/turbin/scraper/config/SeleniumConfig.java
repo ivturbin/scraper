@@ -63,7 +63,7 @@ public class SeleniumConfig {
 
     @Bean
     public WebDriverWait driverWait(WebDriver driver,
-                                    @Value("${configuration.timeout:20000}") Long timeout) {
+                                    @Value("${configuration.selenium_awaiting_timeout:20000}") Long timeout) {
         return new WebDriverWait(driver, Duration.ofMillis(timeout));
     }
 }
