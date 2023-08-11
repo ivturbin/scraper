@@ -1,10 +1,15 @@
 package ru.develop.turbin.scraper.task;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ru.develop.turbin.scraper.entity.ScrapingTaskEntity;
+import ru.develop.turbin.scraper.enums.ScrapingTaskStatusEnum;
+import ru.develop.turbin.scraper.enums.ScrapingTaskTypeEnum;
+import ru.develop.turbin.scraper.service.ScrapingTaskService;
 import ru.develop.turbin.scraper.service.scraping.ScraperFacade;
 
 @Component
@@ -13,6 +18,9 @@ import ru.develop.turbin.scraper.service.scraping.ScraperFacade;
 public class ScheduledScrapingTask {
 
     private final ScraperFacade scraperFacade;
+    private final ScrapingTaskService scrapingTaskService;
+
+    private ScrapingTaskEntity scrapingTaskEntity;
 
     @Value("${configuration.scheduled_scraping_enabled:false}")
     private boolean isScheduledScrapingEnabled;
@@ -20,9 +28,42 @@ public class ScheduledScrapingTask {
     @Scheduled(fixedDelayString = "${configuration.scraping_interval:120000}")
     public void scheduledStart() {
         if (isScheduledScrapingEnabled) {
-            log.info("Старт скрейпинга по расписанию");
-            scraperFacade.scrapeNextCase();
+            if (scrapingTaskEntity == null) {
+                initScrapingTask();
+                log.info("Инициализирована задача интервального скрейпинга {}", scrapingTaskEntity.getScrapingTaskId());
+            }
+            log.info("Интервальный скрейпинг запущен по расписанию");
+            scraperFacade.scrapeNextCase(scrapingTaskEntity);
+        } else if (scrapingTaskEntity != null) {
+            finishScheduledTask();
         }
     }
 
+    public void setScheduledScrapingEnabled(boolean scheduledScrapingEnabled) {
+        isScheduledScrapingEnabled = scheduledScrapingEnabled;
+
+        if (isScheduledScrapingEnabled) {
+            log.info("Включен интервальный скрейпинг");
+        } else {
+            log.info("Выключен интервальный скрейпинг");
+        }
+    }
+
+    private void initScrapingTask() {
+        scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.SCHEDULED);
+    }
+
+    private void finishScheduledTask() {
+        scrapingTaskEntity.setTaskStatus(ScrapingTaskStatusEnum.STOPPED_MANUALLY.name());
+        scrapingTaskService.endScrapingTask(scrapingTaskEntity);
+        scrapingTaskEntity = null;
+    }
+
+    @PreDestroy
+    private void end() {
+        if (scrapingTaskEntity != null) {
+            scrapingTaskEntity.setTaskStatus(ScrapingTaskStatusEnum.STOPPED_ON_SHUTDOWN.name());
+            scrapingTaskService.endScrapingTask(scrapingTaskEntity);
+        }
+    }
 }

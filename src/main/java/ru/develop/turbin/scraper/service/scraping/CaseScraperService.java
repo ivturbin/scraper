@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import ru.develop.turbin.scraper.entity.ScrapingTaskEntity;
 import ru.develop.turbin.scraper.model.CaseHeader;
 import ru.develop.turbin.scraper.model.CaseItem;
 import ru.develop.turbin.scraper.model.ParsedInfoModel;
@@ -22,7 +23,6 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class CaseScraperService {
     @Value("${configuration.main_url}")
     private String url;
 
-    public void scrapeCase(String caseNumber) {
+    public void scrapeCase(String caseNumber, ScrapingTaskEntity scrapingTaskEntity) {
 
         driver.manage().deleteAllCookies();
         try {
