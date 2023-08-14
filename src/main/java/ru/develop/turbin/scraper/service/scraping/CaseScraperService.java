@@ -1,5 +1,6 @@
 package ru.develop.turbin.scraper.service.scraping;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -131,5 +132,10 @@ public class CaseScraperService {
         } catch (RuntimeException e) {
             log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
         }
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        driver.close();
     }
 }
