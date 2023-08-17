@@ -108,13 +108,15 @@ public class CourtCaseRepository {
         );
     }
 
-    public void markUpdated(String caseNumber) {
+    public void markUpdated(String caseNumber, String error) {
         jdbcTemplate.update("update court_case " +
                         "set " +
+                        "update_error = ?, " +
                         "updated = now(), " +
                         "modify_dttm = now() " +
                         "where " +
                         "case_number = ?",
+                error,
                 caseNumber
         );
     }

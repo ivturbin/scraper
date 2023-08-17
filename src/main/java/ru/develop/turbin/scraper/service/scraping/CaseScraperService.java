@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.entity.ScrapingTaskEntity;
+import ru.develop.turbin.scraper.enums.ScrapingError;
 import ru.develop.turbin.scraper.model.CaseHeader;
 import ru.develop.turbin.scraper.model.CaseItem;
 import ru.develop.turbin.scraper.model.ParsedInfoModel;
@@ -61,8 +62,8 @@ public class CaseScraperService {
                 caseRef = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='num_case']")));
             } catch (TimeoutException e) {
                 WebElement noResults = driver.findElement(By.xpath("//div[@class='b-noResults']"));
-                log.error("Дело {} не найдено в источнике", caseNumber);
-                errorHandler.skipCase(caseNumber);
+                log.error(ScrapingError.CASE_NOT_FOUND.getLogMessage(), caseNumber);
+                errorHandler.skipCase(caseNumber, ScrapingError.CASE_NOT_FOUND.getLogMessage());
                 return;
             }
 
@@ -74,7 +75,16 @@ public class CaseScraperService {
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//i[@class='b-sicon']")));
 
             List<WebElement> buttons = driver.findElements(By.xpath("//i[@class='b-sicon']"));
-            buttons.forEach(WebElement::click);
+
+            // filkin
+             buttons.forEach(WebElement::click);
+//            JavascriptExecutor jse = (JavascriptExecutor)driver;
+//            for (WebElement button : buttons) {
+//                Thread.sleep(500);
+//                jse.executeScript("arguments[0].scrollIntoView()", button);
+//                button.click();
+//            }
+
 
             String headerExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded";
             String headerNotExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break";
@@ -128,9 +138,13 @@ public class CaseScraperService {
 
 
         } catch (NoSuchElementException e) {
-            log.error("Ошибка поиска элемента на странице, дело {}: {}", caseNumber, e.getLocalizedMessage());
+            log.error(ScrapingError.ELEMENT_NOT_FOUND.getLogMessage(), caseNumber, e.getLocalizedMessage());
+            errorHandler.skipCase(caseNumber, ScrapingError.ELEMENT_NOT_FOUND.getMessage() + e.getLocalizedMessage());
         } catch (RuntimeException e) {
             log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
+            errorHandler.skipCase(caseNumber, e.getLocalizedMessage());
+//        } catch (InterruptedException e) {
+//            log.error("Ошибка: {}", e.getLocalizedMessage());
         }
     }
 

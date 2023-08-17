@@ -2,6 +2,7 @@ package ru.develop.turbin.scraper.service.scraping;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.dao.CourtCaseRepository;
@@ -46,5 +47,16 @@ public class ScraperFacade {
         ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_SINGLE);
         caseScraperService.scrapeCase(caseNumber, scrapingTaskEntity);
         scrapingTaskService.endScrapingTask(scrapingTaskEntity);
+    }
+
+    private void scrapeCaseWithErrorsHandling(String caseNumber) {
+        try {
+    } catch (NoSuchElementException e) {
+        log.error("Ошибка поиска элемента на странице, дело {}: {}", caseNumber, e.getLocalizedMessage());
+    } catch (RuntimeException e) {
+        log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
+//        } catch (InterruptedException e) {
+//            log.error("Ошибка: {}", e.getLocalizedMessage());
+    }
     }
 }
