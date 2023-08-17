@@ -150,6 +150,7 @@ public class CaseScraperService {
 
     @PreDestroy
     public void preDestroy() {
-        driver.close();
+        driver.quit();
+        log.info("Драйвер остановлен");
     }
 }

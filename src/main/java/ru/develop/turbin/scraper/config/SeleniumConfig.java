@@ -57,9 +57,9 @@ public class SeleniumConfig {
     }
 
     @Bean
-    public WebDriver chromeDriver(ChromeOptions options) {
+    public WebDriver chromeDriver() {
         WebDriverManager.chromedriver().setup();
-        return new ChromeDriver(options);
+        return new ChromeDriver(chromeOptions());
     }
 
     @Bean
