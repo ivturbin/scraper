@@ -28,7 +28,8 @@ public class SeleniumConfig {
 //        //options.addArguments("--disable-infobars");                               // Хром контролируется ...
         //options.addArguments("--disable-extensions");                           // Отключить расширения
         //options.addArguments("--disable-plugins");                           // Отключить расширения
-//        options.addArguments("--disable-gpu");                                  // Disable GPU acceleration (if needed)
+        options.addArguments("--disable-gpu");                                  // Disable GPU acceleration (if needed)
+        options.addArguments("--start-maximized");
 //        options.addArguments("--no-sandbox");                                   // Disable sandbox (Linux environments)
 //        options.addArguments("--disable-popup-blocking");                       // Disable popup blocking
 //        options.addArguments("pdfjs.disabled=true");
