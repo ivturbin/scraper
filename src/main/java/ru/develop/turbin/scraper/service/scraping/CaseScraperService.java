@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -129,7 +130,9 @@ public class CaseScraperService {
                 Document itemsContainerDocument = Jsoup.parse(itemContainers.get(i).getAttribute(("outerHTML")));
 
                 //TODO обработать нпе
-                List<CaseItem> caseItems = itemParser.parseItems(itemsContainerDocument.body().children().first().children().first().children());
+                Element element1 = itemsContainerDocument.body().children().first();
+                Element element2 = element1.children().first();
+                List<CaseItem> caseItems = itemParser.parseItems(element2.children());
                 parsedEvents.put(caseHeader, caseItems);
                 parsedInfoModel.setParsedEventsByHeader(parsedEvents);
             }

@@ -6,8 +6,10 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.model.CaseItem;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemParser {
@@ -22,7 +24,11 @@ public class ItemParser {
             CaseItem caseItem = new CaseItem();
             caseItem.setDataId(element.attr("data-id"));
             caseItem.setDataDate(element.attr("data-date"));
-            caseItem.setCaseDate(element.select(".case-date").first().text().strip());
+
+            Optional.ofNullable(element.select(".case-date").first())
+                    .ifPresent(caseDateElement -> caseItem.setCaseDate(caseDateElement.text().strip()));
+
+            //TODO обработать
             caseItem.setCaseType(element.select(".case-type").first().text().strip());
 
             Element rCol = element.select(".r-col").first();
