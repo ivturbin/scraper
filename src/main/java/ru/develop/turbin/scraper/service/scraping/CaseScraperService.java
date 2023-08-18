@@ -64,12 +64,11 @@ public class CaseScraperService {
             WebElement searchButton = driver.findElement(By.xpath("//button[@alt='Найти']"));
             searchButton.click();
 
-            //WebElement caseRef = driver.findElement(By.xpath("//a[@class='num_case']"));
-            WebElement caseRef = null;
+            WebElement caseRef;
             try {
                 caseRef = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='num_case']")));
             } catch (TimeoutException e) {
-                WebElement noResults = driver.findElement(By.xpath("//div[@class='b-noResults']"));
+                driver.findElement(By.xpath("//div[@class='b-noResults']"));
                 log.error(ScrapingError.CASE_NOT_FOUND.getLogMessage(), caseNumber);
                 errorHandler.skipCase(caseNumber, ScrapingError.CASE_NOT_FOUND.getLogMessage());
                 return;
@@ -92,8 +91,6 @@ public class CaseScraperService {
 
             String headerExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded";
             String headerNotExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break";
-
-            //wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded']")));
 
             wait.until(driver -> driver
                     .findElements(By.xpath("//div[@class='" + headerNotExpandedClassName + "']"))
@@ -125,19 +122,19 @@ public class CaseScraperService {
             for (int i = 0; i < headerWebElements.size(); i++) {
                 Document headersDocument = Jsoup.parse(headerWebElements.get(i).getAttribute(("outerHTML")));
 
-                //Elements header = document.getElementsByClass("b-chrono-item-header js-chrono-item-header page-break");
-                //Elements items = document.getElementsByClass("b-chrono-item js-chrono-item b-chrono-cols page-break g-ec");
-
                 CaseHeader caseHeader = headerParser.parseHeader(headersDocument.children());
 
                 Document itemsContainerDocument = Jsoup.parse(itemContainers.get(i).getAttribute(("outerHTML")));
 
-                //TODO обработать нпе
-                Element element1 = itemsContainerDocument.body().children().first();
-                Element element2 = element1.children().first();
-                List<CaseItem> caseItems = itemParser.parseItems(element2.children());
-                parsedEvents.put(caseHeader, caseItems);
-                parsedInfoModel.setParsedEventsByHeader(parsedEvents);
+                Element itemsContainerElement = itemsContainerDocument.body().children().first();
+                if (itemsContainerElement != null) {
+                    Element itemsWrapperElement = itemsContainerElement.children().first();
+                    if (itemsWrapperElement != null) {
+                        List<CaseItem> caseItems = itemParser.parseItems(itemsWrapperElement.children());
+                        parsedEvents.put(caseHeader, caseItems);
+                        parsedInfoModel.setParsedEventsByHeader(parsedEvents);
+                    }
+                }
             }
 
             parsedInfoProcessor.process(parsedInfoModel);
