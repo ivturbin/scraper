@@ -1,5 +1,6 @@
 package ru.develop.turbin.scraper.service.scraping;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +40,15 @@ public class CaseScraperService {
     private final ItemParser itemParser;
     private final ParsedInfoProcessor parsedInfoProcessor;
     private final ErrorHandler errorHandler;
+    private JavascriptExecutor javascriptExecutor;
 
     @Value("${configuration.main_url}")
     private String url;
+
+    @PostConstruct
+    public void init() {
+        javascriptExecutor = (JavascriptExecutor) driver;
+    }
 
     public void scrapeCase(String caseNumber, ScrapingTaskEntity scrapingTaskEntity) {
 
@@ -77,15 +84,11 @@ public class CaseScraperService {
 
             List<WebElement> buttons = driver.findElements(By.xpath("//i[@class='b-sicon']"));
 
-            // filkin
-             buttons.forEach(WebElement::click);
-//            JavascriptExecutor jse = (JavascriptExecutor)driver;
-//            for (WebElement button : buttons) {
-//                Thread.sleep(500);
-//                jse.executeScript("arguments[0].scrollIntoView()", button);
-//                button.click();
-//            }
-
+            for (WebElement button : buttons) {
+                javascriptExecutor.executeScript("arguments[0].scrollIntoView()", button);
+                wait.until(ExpectedConditions.elementToBeClickable(button));
+                button.click();
+            }
 
             String headerExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break b-chrono-item-header-expanded";
             String headerNotExpandedClassName = "b-chrono-item-header js-chrono-item-header page-break";
@@ -96,7 +99,7 @@ public class CaseScraperService {
                     .findElements(By.xpath("//div[@class='" + headerNotExpandedClassName + "']"))
                     .isEmpty());
 
-            List<WebElement> headerWebElements = (List<WebElement>) ((JavascriptExecutor) driver)
+            List<WebElement> headerWebElements = (List<WebElement>) javascriptExecutor
                     .executeScript("return document.getElementsByClassName('" + headerExpandedClassName + "');");
 
             //TODO писать ошибку в БД
@@ -105,7 +108,7 @@ public class CaseScraperService {
             }
 
             String itemsContainerClassName = "b-chrono-items-container js-chrono-items-container";
-            List<WebElement> itemContainers = (List<WebElement>) ((JavascriptExecutor) driver)
+            List<WebElement> itemContainers = (List<WebElement>) javascriptExecutor
                     .executeScript("return document.getElementsByClassName('" + itemsContainerClassName + "');");
 
             //TODO писать ошибку в БД
@@ -147,7 +150,7 @@ public class CaseScraperService {
             log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
             errorHandler.skipCase(caseNumber, e.getLocalizedMessage());
 //        } catch (InterruptedException e) {
-//            log.error("Ошибка: {}", e.getLocalizedMessage());
+//            throw new RuntimeException(e);
         }
     }
 
