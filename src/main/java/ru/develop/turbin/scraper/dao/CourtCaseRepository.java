@@ -99,7 +99,8 @@ public class CourtCaseRepository {
                         "case_link = ?, " +
                         "is_scraped = ?, " +
                         "modify_dttm = now(), " +
-                        "updated = now() " +
+                        "updated = now(), " +
+                        "update_error = null " +
                         "where " +
                         "case_id = ?",
                 caseEntity.getCaseLink(),
