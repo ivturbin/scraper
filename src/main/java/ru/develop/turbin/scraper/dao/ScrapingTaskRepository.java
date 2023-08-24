@@ -19,13 +19,15 @@ public class ScrapingTaskRepository {
     public Long save(ScrapingTaskEntity taskEntity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String insertSql = "insert into scraping_task " +
-                "(task_type, task_status) " +
-                "values (?, ?)";
+                "(task_type, task_status, passed, failed) " +
+                "values (?, ?, ?, ?)";
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(insertSql, new String[] {"scraping_task_id"});
             ps.setString(1, taskEntity.getTaskType());
             ps.setString(2, taskEntity.getTaskStatus());
+            ps.setInt(3, taskEntity.getPassed());
+            ps.setInt(4, taskEntity.getFailed());
             return ps;
         }, keyHolder);
 
@@ -37,11 +39,15 @@ public class ScrapingTaskRepository {
                         "set " +
                         "task_status = ?, " +
                         "task_details = ?, " +
-                        "end_dttm = now() " +
+                        "end_dttm = now(), " +
+                        "passed = ?, " +
+                        "failed = ? " +
                         "where " +
                         "scraping_task_id = ?",
                 taskEntity.getTaskStatus(),
                 taskEntity.getTaskDetails(),
+                taskEntity.getPassed(),
+                taskEntity.getFailed(),
                 taskEntity.getScrapingTaskId()
         );
     }

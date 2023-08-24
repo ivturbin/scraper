@@ -12,4 +12,6 @@ private String taskStatus;
 private String taskDetails;
 private OffsetDateTime createDttm;
 private OffsetDateTime endDttm;
+private int passed;
+private int failed;
 }

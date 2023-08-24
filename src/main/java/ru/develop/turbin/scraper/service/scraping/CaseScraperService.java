@@ -18,7 +18,7 @@ import ru.develop.turbin.scraper.enums.ScrapingError;
 import ru.develop.turbin.scraper.model.CaseHeader;
 import ru.develop.turbin.scraper.model.CaseItem;
 import ru.develop.turbin.scraper.model.ParsedInfoModel;
-import ru.develop.turbin.scraper.service.ErrorHandler;
+import ru.develop.turbin.scraper.service.ScrapingResultHandler;
 import ru.develop.turbin.scraper.service.ParsedInfoProcessor;
 import ru.develop.turbin.scraper.service.parsing.HeaderParser;
 import ru.develop.turbin.scraper.service.parsing.ItemParser;
@@ -40,7 +40,7 @@ public class CaseScraperService {
     private final HeaderParser headerParser;
     private final ItemParser itemParser;
     private final ParsedInfoProcessor parsedInfoProcessor;
-    private final ErrorHandler errorHandler;
+    private final ScrapingResultHandler scrapingResultHandler;
     private JavascriptExecutor javascriptExecutor;
     private Random rand;
 
@@ -74,7 +74,7 @@ public class CaseScraperService {
             } catch (TimeoutException e) {
                 driver.findElement(By.xpath("//div[@class='b-noResults']"));
                 log.error(ScrapingError.CASE_NOT_FOUND.getLogMessage(), caseNumber);
-                errorHandler.skipCase(caseNumber, ScrapingError.CASE_NOT_FOUND.getLogMessage());
+                scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, ScrapingError.CASE_NOT_FOUND.getLogMessage());
                 return;
             }
 
@@ -86,13 +86,6 @@ public class CaseScraperService {
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//i[@class='b-sicon']")));
 
             List<WebElement> buttons = driver.findElements(By.xpath("//i[@class='b-sicon']"));
-
-//            for (WebElement button : buttons) {
-//                javascriptExecutor.executeScript("arguments[0].scrollIntoView()", button);
-//                wait.until(ExpectedConditions.elementToBeClickable(button));
-//                Thread.sleep(rand.nextInt(2000) + 1000);
-//                button.click();
-//            }
 
             for (int i = buttons.size() - 1; i >= 0; i--) {
                 WebElement button = buttons.get(i);
@@ -152,17 +145,16 @@ public class CaseScraperService {
 
             parsedInfoProcessor.process(parsedInfoModel);
 
-
+            scrapingResultHandler.succeed(scrapingTaskEntity);
         } catch (NoSuchElementException e) {
             log.error(ScrapingError.ELEMENT_NOT_FOUND.getLogMessage(), caseNumber, e.getLocalizedMessage());
-            errorHandler.skipCase(caseNumber, ScrapingError.ELEMENT_NOT_FOUND.getMessage() + e.getLocalizedMessage());
+            scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, ScrapingError.ELEMENT_NOT_FOUND.getMessage() + e.getLocalizedMessage());
         } catch (RuntimeException e) {
             log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
-            errorHandler.skipCase(caseNumber, e.getLocalizedMessage());
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
+            scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, e.getLocalizedMessage());
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            log.error("Ошибка Thread.sleep(), дело {}", caseNumber);
+            scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, e.getLocalizedMessage());
         }
     }
 

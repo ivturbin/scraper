@@ -17,6 +17,8 @@ public class ScrapingTaskService {
         ScrapingTaskEntity scrapingTaskEntity = new ScrapingTaskEntity();
         scrapingTaskEntity.setTaskType(taskTypeEnum.name());
         scrapingTaskEntity.setTaskStatus(ScrapingTaskStatusEnum.RUNNING.name());
+        scrapingTaskEntity.setPassed(0);
+        scrapingTaskEntity.setFailed(0);
 
         Long taskId = scrapingTaskRepository.save(scrapingTaskEntity);
         scrapingTaskEntity.setScrapingTaskId(taskId);
@@ -32,5 +34,16 @@ public class ScrapingTaskService {
         } else {
             scrapingTaskRepository.updateTask(scrapingTaskEntity);
         }
+    }
+
+    public void updateSucceed(ScrapingTaskEntity scrapingTaskEntity) {
+        scrapingTaskEntity.setPassed(scrapingTaskEntity.getPassed() + 1);
+        scrapingTaskRepository.updateTask(scrapingTaskEntity);
+    }
+
+    public void updateFailed(ScrapingTaskEntity scrapingTaskEntity) {
+        scrapingTaskEntity.setPassed(scrapingTaskEntity.getPassed() + 1);
+        scrapingTaskEntity.setFailed(scrapingTaskEntity.getFailed() + 1);
+        scrapingTaskRepository.updateTask(scrapingTaskEntity);
     }
 }
