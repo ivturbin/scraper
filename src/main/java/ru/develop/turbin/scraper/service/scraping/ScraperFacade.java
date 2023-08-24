@@ -43,6 +43,12 @@ public class ScraperFacade {
         caseScraperService.scrapeCase(caseNumber, scrapingTaskEntity);
     }
 
+    public void getAndScrapeNextCase() {
+        ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_NEXT);
+        scrapeNextCase(scrapingTaskEntity);
+        scrapingTaskService.endScrapingTask(scrapingTaskEntity);
+    }
+
     public void scrapeCaseByNumber(String caseNumber) {
         ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_SINGLE);
         caseScraperService.scrapeCase(caseNumber, scrapingTaskEntity);

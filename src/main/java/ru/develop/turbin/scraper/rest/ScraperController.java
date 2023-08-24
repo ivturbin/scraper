@@ -35,10 +35,8 @@ public class ScraperController {
 
     @PostMapping("/scrape/next")
     public void manualNextStart() {
-        ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_NEXT);
         log.info("/scrape/next");
-        scraperFacade.scrapeNextCase(scrapingTaskEntity);
-        scrapingTaskService.endScrapingTask(scrapingTaskEntity);
+        scraperFacade.getAndScrapeNextCase();
     }
 
     @PostMapping("/start")
