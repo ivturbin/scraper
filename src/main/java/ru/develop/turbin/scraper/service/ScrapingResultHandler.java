@@ -15,7 +15,6 @@ public class ScrapingResultHandler {
     private final CourtCaseRepository courtCaseRepository;
     private final ScrapingTaskService scrapingTaskService;
 
-    //TODO сделать обработку и ещё не существующего в бд дела
     public void skipCase(ScrapingTaskEntity scrapingTaskEntity, String caseNumber, String error) {
         log.warn("Дело {} пропущено", caseNumber);
         try {
