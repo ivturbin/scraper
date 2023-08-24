@@ -87,7 +87,15 @@ public class CaseScraperService {
 
             List<WebElement> buttons = driver.findElements(By.xpath("//i[@class='b-sicon']"));
 
-            for (WebElement button : buttons) {
+//            for (WebElement button : buttons) {
+//                javascriptExecutor.executeScript("arguments[0].scrollIntoView()", button);
+//                wait.until(ExpectedConditions.elementToBeClickable(button));
+//                Thread.sleep(rand.nextInt(2000) + 1000);
+//                button.click();
+//            }
+
+            for (int i = buttons.size() - 1; i >= 0; i--) {
+                WebElement button = buttons.get(i);
                 javascriptExecutor.executeScript("arguments[0].scrollIntoView()", button);
                 wait.until(ExpectedConditions.elementToBeClickable(button));
                 Thread.sleep(rand.nextInt(2000) + 1000);
