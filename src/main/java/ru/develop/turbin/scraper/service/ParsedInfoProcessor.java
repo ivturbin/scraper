@@ -53,7 +53,13 @@ public class ParsedInfoProcessor {
                     fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
                 }
             } else {
-                caseEventId = caseEventRepository.save(caseEventEntity);
+                try {
+                    caseEventId = caseEventRepository.save(caseEventEntity);
+                } catch (Exception e) {
+                    throw new RuntimeException(String.format("Ошибка сохранения ивента %d с хэшем %d: %s",
+                            caseEventEntity.getCaseEventId(), caseEventEntity.getEventHash(), e.getLocalizedMessage()));
+                }
+
                 String fileLink = caseEventEntity.getFileLink();
                 if (fileLink != null && !fileLink.isEmpty()) {
                     fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
