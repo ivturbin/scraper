@@ -55,7 +55,6 @@ public class CaseScraperService {
 
     public void scrapeCase(String caseNumber, ScrapingTaskEntity scrapingTaskEntity) {
 
-        driver.manage().deleteAllCookies();
         try {
             driver.get(url);
             Thread.sleep(rand.nextInt(1500) + 500);
