@@ -39,7 +39,6 @@ public class ScrapingTaskRepository {
                         "set " +
                         "task_status = ?, " +
                         "task_details = ?, " +
-                        "end_dttm = now(), " +
                         "passed = ?, " +
                         "failed = ? " +
                         "where " +
@@ -48,6 +47,20 @@ public class ScrapingTaskRepository {
                 taskEntity.getTaskDetails(),
                 taskEntity.getPassed(),
                 taskEntity.getFailed(),
+                taskEntity.getScrapingTaskId()
+        );
+    }
+
+    public void endTask(ScrapingTaskEntity taskEntity) {
+        jdbcTemplate.update("update scraping_task " +
+                        "set " +
+                        "task_status = ?, " +
+                        "task_details = ?, " +
+                        "end_dttm = now() " +
+                        "where " +
+                        "scraping_task_id = ?",
+                taskEntity.getTaskStatus(),
+                taskEntity.getTaskDetails(),
                 taskEntity.getScrapingTaskId()
         );
     }

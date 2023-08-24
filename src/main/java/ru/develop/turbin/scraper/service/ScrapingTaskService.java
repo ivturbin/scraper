@@ -30,9 +30,9 @@ public class ScrapingTaskService {
         if (ScrapingTaskStatusEnum.RUNNING.name()
                 .equals(scrapingTaskEntity.getTaskStatus())) {
             scrapingTaskEntity.setTaskStatus(ScrapingTaskStatusEnum.SUCCEED.name());
-            scrapingTaskRepository.updateTask(scrapingTaskEntity);
+            scrapingTaskRepository.endTask(scrapingTaskEntity);
         } else {
-            scrapingTaskRepository.updateTask(scrapingTaskEntity);
+            scrapingTaskRepository.endTask(scrapingTaskEntity);
         }
     }
 
