@@ -27,6 +27,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,7 @@ public class CaseScraperService {
     private final ParsedInfoProcessor parsedInfoProcessor;
     private final ErrorHandler errorHandler;
     private JavascriptExecutor javascriptExecutor;
+    private Random rand;
 
     @Value("${configuration.main_url}")
     private String url;
@@ -48,6 +50,7 @@ public class CaseScraperService {
     @PostConstruct
     public void init() {
         javascriptExecutor = (JavascriptExecutor) driver;
+        rand = new Random();
     }
 
     public void scrapeCase(String caseNumber, ScrapingTaskEntity scrapingTaskEntity) {
@@ -55,7 +58,7 @@ public class CaseScraperService {
         driver.manage().deleteAllCookies();
         try {
             driver.get(url);
-            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
+            Thread.sleep(rand.nextInt(1500) + 500);
 
             WebElement caseNumberTextBox = driver.findElement(By.xpath("//input[@placeholder='например, А50-5568/08']"));
             caseNumberTextBox.sendKeys(caseNumber);
@@ -63,6 +66,8 @@ public class CaseScraperService {
 
             WebElement searchButton = driver.findElement(By.xpath("//button[@alt='Найти']"));
             searchButton.click();
+
+            Thread.sleep(rand.nextInt(2000) + 1000);
 
             WebElement caseRef;
             try {
@@ -86,6 +91,7 @@ public class CaseScraperService {
             for (WebElement button : buttons) {
                 javascriptExecutor.executeScript("arguments[0].scrollIntoView()", button);
                 wait.until(ExpectedConditions.elementToBeClickable(button));
+                Thread.sleep(rand.nextInt(2000) + 1000);
                 button.click();
             }
 
@@ -148,6 +154,8 @@ public class CaseScraperService {
             errorHandler.skipCase(caseNumber, e.getLocalizedMessage());
 //        } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
