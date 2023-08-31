@@ -74,7 +74,7 @@ public class CaseScraperService {
             } catch (TimeoutException e) {
                 driver.findElement(By.xpath("//div[@class='b-noResults']"));
                 log.error(ScrapingError.CASE_NOT_FOUND.getLogMessage(), caseNumber);
-                scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, ScrapingError.CASE_NOT_FOUND.getLogMessage());
+                scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.CASE_NOT_FOUND.getMessage());
                 return;
             }
 
@@ -143,18 +143,18 @@ public class CaseScraperService {
                 }
             }
 
-            parsedInfoProcessor.process(parsedInfoModel);
+            Long caseId = parsedInfoProcessor.process(parsedInfoModel);
 
-            scrapingResultHandler.succeed(scrapingTaskEntity);
+            scrapingResultHandler.completeCaseScraping(scrapingTaskEntity, caseId);
         } catch (NoSuchElementException e) {
             log.error(ScrapingError.ELEMENT_NOT_FOUND.getLogMessage(), caseNumber, e.getLocalizedMessage());
-            scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, ScrapingError.ELEMENT_NOT_FOUND.getMessage() + e.getLocalizedMessage());
+            scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.ELEMENT_NOT_FOUND.getMessage() + e.getLocalizedMessage());
         } catch (RuntimeException e) {
-            log.error("Ошибка, дело {}: {}", caseNumber, e.getLocalizedMessage());
-            scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, e.getLocalizedMessage());
+            log.error(ScrapingError.COMMON_ERROR.getLogMessage(), caseNumber, e.getLocalizedMessage());
+            scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.COMMON_ERROR.getMessage() + e.getLocalizedMessage());
         } catch (InterruptedException e) {
-            log.error("Ошибка Thread.sleep(), дело {}", caseNumber);
-            scrapingResultHandler.skipCase(scrapingTaskEntity, caseNumber, e.getLocalizedMessage());
+            log.error(ScrapingError.THREAD_ERROR.getLogMessage(), caseNumber);
+            scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.THREAD_ERROR.getMessage() + e.getLocalizedMessage());
         }
     }
 

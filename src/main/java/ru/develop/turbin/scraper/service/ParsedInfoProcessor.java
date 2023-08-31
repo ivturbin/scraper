@@ -25,7 +25,7 @@ public class ParsedInfoProcessor {
     private final CaseEventRepository caseEventRepository;
     private final FileDownloader fileDownloader;
 
-    public void process(ParsedInfoModel parsedInfoModel) {
+    public Long process(ParsedInfoModel parsedInfoModel) {
 
         log.debug("Сохранение информации по делу {} в БД", parsedInfoModel.getCaseNumber());
 
@@ -68,6 +68,8 @@ public class ParsedInfoProcessor {
         }));
 
         log.info("Дело {} сохранено", parsedInfoModel.getCaseNumber());
+
+        return courtCaseId;
     }
 
     private CaseEventEntity getCaseEventEntity(CourtCaseEntity caseEntity, CaseHeader header, CaseItem event) {

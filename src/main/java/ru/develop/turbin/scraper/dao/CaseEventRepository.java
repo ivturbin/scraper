@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.develop.turbin.scraper.entity.CaseEventEntity;
-import ru.develop.turbin.scraper.entity.CourtCaseEntity;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
