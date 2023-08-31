@@ -44,10 +44,10 @@ public class CourtCaseRepository {
                             rs.getBoolean(6),
                             rs.getString(7)),
                     caseNumber);
-            log.info("Дело {} найдено в БД", caseNumber);
+            log.debug("Дело {} найдено в БД", caseNumber);
             return courtCaseEntity;
         } catch (EmptyResultDataAccessException e) {
-            log.info("Дело {} не найдено в БД", caseNumber);
+            log.debug("Дело {} не найдено в БД", caseNumber);
             return null;
         }
     }

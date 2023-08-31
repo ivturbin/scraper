@@ -27,7 +27,7 @@ public class ParsedInfoProcessor {
 
     public void process(ParsedInfoModel parsedInfoModel) {
 
-        log.info("Сохранение информации по делу {} в БД", parsedInfoModel.getCaseNumber());
+        log.debug("Сохранение информации по делу {} в БД", parsedInfoModel.getCaseNumber());
 
         CourtCaseEntity caseEntity = getCaseEntity(parsedInfoModel);
         Long courtCaseId = caseEntity.getCaseId();

@@ -20,7 +20,7 @@ public class ScrapingResultHandler {
         try {
             courtCaseRepository.markUpdated(caseNumber, error);
         } catch (Exception e) {
-            log.info("Дело {} не найдено в БД", caseNumber);
+            log.debug("Дело {} не найдено в БД", caseNumber);
         }
         scrapingTaskService.updateFailed(scrapingTaskEntity);
     }
