@@ -45,9 +45,7 @@ curl --location --request POST 'http://{host}:{port}/stop'
 ```
 Скрейпинг дела по номеру.
 ```
-curl --location 'http://{host}:{port}/scrape' 
---header 'Content-Type: application/json' 
---data '{номер дела}'
+curl --location 'http://{host}:{port}/scrape?caseNumber={Номер дела}'
 ```
 Скрейпинг всех дел из таблицы court_case. 
 ```
@@ -61,3 +59,6 @@ curl --location --request POST 'http://{host}:{port}/scrape/next'
 ```
 curl --location 'http://localhost:9001/status'
 ```
+##### 5. Swagger-UI 
+доступен по стандартному адресу
+http://localhost:9001/swagger-ui/index.html
