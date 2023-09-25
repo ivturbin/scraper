@@ -55,7 +55,14 @@ public class FileDownloader {
                     log.error("Файл считан не полностью {}", fileToOpen.getAbsolutePath());
                 }
             } catch (IOException e) {
+                fileData = null;
                 log.error("Ошибка чтения файла: {}", fileToOpen.getAbsolutePath());
+            } finally {
+                if (fileToOpen.delete()) {
+                    log.info("Файл успешно удален с диска {}", fileToOpen.getAbsolutePath());
+                } else {
+                    log.debug("Не удалось удалить файл с диска {}", fileToOpen.getAbsolutePath());
+                }
             }
         } else {
             log.error("Файл не найден: {}", fileToOpen.getAbsolutePath());
