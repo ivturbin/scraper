@@ -94,7 +94,8 @@ public class CaseEventRepository {
                         "additional_info = ?, " +
                         "is_signed = ?, " +
                         "signature_info = ?, " +
-                        "original_data = ? " +
+                        "original_data = ?, " +
+                        "modify_dttm = now() " +
                         "where case_event_id = ?",
                 caseEventEntity.getFileLink(),
                 caseEventEntity.getFileInfo(),
@@ -102,7 +103,7 @@ public class CaseEventRepository {
                 caseEventEntity.getIsSigned(),
                 caseEventEntity.getSignatureInfo(),
                 caseEventEntity.getOriginalData(),
-                caseEventEntity.getEventCaseId()
+                caseEventEntity.getCaseEventId()
                 );
     }
 }
