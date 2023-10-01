@@ -109,7 +109,7 @@ public class CourtCaseRepository {
         );
     }
 
-    public void markUpdated(String caseNumber, String error) {
+    public void markUpdatedWithErrorByNumber(String caseNumber, String error) {
         jdbcTemplate.update("update court_case " +
                         "set " +
                         "update_error = ?, " +
@@ -119,6 +119,19 @@ public class CourtCaseRepository {
                         "case_number = ?",
                 error,
                 caseNumber
+        );
+    }
+
+    public void markUpdatedWithErrorById(Long caseId, String error) {
+        jdbcTemplate.update("update court_case " +
+                        "set " +
+                        "update_error = ?, " +
+                        "updated = now(), " +
+                        "modify_dttm = now() " +
+                        "where " +
+                        "case_id = ?",
+                error,
+                caseId
         );
     }
 }

@@ -4,9 +4,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -22,9 +19,9 @@ import ru.develop.turbin.scraper.service.ScrapingResultHandler;
 import ru.develop.turbin.scraper.service.ParsedInfoProcessor;
 import ru.develop.turbin.scraper.service.parsing.HeaderParser;
 import ru.develop.turbin.scraper.service.parsing.ItemParser;
+import ru.develop.turbin.scraper.service.parsing.ParsingFacade;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -39,6 +36,7 @@ public class CaseScraperService {
     private final WebDriverWait wait;
     private final HeaderParser headerParser;
     private final ItemParser itemParser;
+    private final ParsingFacade parsingFacade;
     private final ParsedInfoProcessor parsedInfoProcessor;
     private final ScrapingResultHandler scrapingResultHandler;
     private JavascriptExecutor javascriptExecutor;
@@ -102,20 +100,18 @@ public class CaseScraperService {
                     .findElements(By.xpath("//div[@class='" + headerNotExpandedClassName + "']"))
                     .isEmpty());
 
-            List<WebElement> headerWebElements = (List<WebElement>) javascriptExecutor
+            List<WebElement> headerWebElementList = (List<WebElement>) javascriptExecutor
                     .executeScript("return document.getElementsByClassName('" + headerExpandedClassName + "');");
 
-            //TODO писать ошибку в БД
-            if (headerWebElements.isEmpty()) {
+            if (headerWebElementList.isEmpty()) {
                 throw new RuntimeException(String.format("Не обнаружено элементов header-expanded для дела %s", caseNumber));
             }
 
             String itemsContainerClassName = "b-chrono-items-container js-chrono-items-container";
-            List<WebElement> itemContainers = (List<WebElement>) javascriptExecutor
+            List<WebElement> itemsContainerWebElementList = (List<WebElement>) javascriptExecutor
                     .executeScript("return document.getElementsByClassName('" + itemsContainerClassName + "');");
 
-            //TODO писать ошибку в БД
-            if (itemContainers.isEmpty()) {
+            if (itemsContainerWebElementList.isEmpty()) {
                 throw new RuntimeException(String.format("Не обнаружено элементов items-container для дела %s", caseNumber));
             }
 
@@ -123,29 +119,13 @@ public class CaseScraperService {
             parsedInfoModel.setCaseNumber(caseNumber);
             parsedInfoModel.setCaseLink(caseLink);
 
-            Map<CaseHeader, List<CaseItem>> parsedEvents = new HashMap<>();
+            StringBuilder errorBuilder = new StringBuilder();
+            Map<CaseHeader, List<CaseItem>> parsedEvents = parsingFacade.getParsedItemsMap(headerWebElementList, itemsContainerWebElementList, errorBuilder);
+            parsedInfoModel.setParsedEventsByHeader(parsedEvents);
 
-            for (int i = 0; i < headerWebElements.size(); i++) {
-                Document headersDocument = Jsoup.parse(headerWebElements.get(i).getAttribute(("outerHTML")));
+            Long caseId = parsedInfoProcessor.process(parsedInfoModel, scrapingTaskEntity);
 
-                CaseHeader caseHeader = headerParser.parseHeader(headersDocument.children());
-
-                Document itemsContainerDocument = Jsoup.parse(itemContainers.get(i).getAttribute(("outerHTML")));
-
-                Element itemsContainerElement = itemsContainerDocument.body().children().first();
-                if (itemsContainerElement != null) {
-                    Element itemsWrapperElement = itemsContainerElement.children().first();
-                    if (itemsWrapperElement != null) {
-                        List<CaseItem> caseItems = itemParser.parseItems(itemsWrapperElement.children());
-                        parsedEvents.put(caseHeader, caseItems);
-                        parsedInfoModel.setParsedEventsByHeader(parsedEvents);
-                    }
-                }
-            }
-
-            Long caseId = parsedInfoProcessor.process(parsedInfoModel);
-
-            scrapingResultHandler.completeCaseScraping(scrapingTaskEntity, caseId);
+            scrapingResultHandler.completeCaseScraping(scrapingTaskEntity, caseId, errorBuilder);
         } catch (NoSuchElementException e) {
             log.error(ScrapingError.ELEMENT_NOT_FOUND.getLogMessage(), caseNumber, e.getLocalizedMessage());
             scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.ELEMENT_NOT_FOUND.getMessage() + e.getLocalizedMessage());

@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.dao.CaseEventRepository;
 import ru.develop.turbin.scraper.dao.CourtCaseRepository;
+import ru.develop.turbin.scraper.dao.EventScrapingLogRepository;
 import ru.develop.turbin.scraper.entity.CaseEventEntity;
 import ru.develop.turbin.scraper.entity.CourtCaseEntity;
+import ru.develop.turbin.scraper.entity.ScrapingTaskEntity;
 import ru.develop.turbin.scraper.model.CaseHeader;
 import ru.develop.turbin.scraper.model.CaseItem;
 import ru.develop.turbin.scraper.model.ParsedInfoModel;
@@ -24,8 +26,9 @@ public class ParsedInfoProcessor {
     private final CourtCaseRepository courtCaseRepository;
     private final CaseEventRepository caseEventRepository;
     private final FileDownloader fileDownloader;
+    private final EventScrapingLogRepository eventScrapingLogRepository;
 
-    public Long process(ParsedInfoModel parsedInfoModel) {
+    public Long process(ParsedInfoModel parsedInfoModel, ScrapingTaskEntity scrapingTaskEntity) {
 
         log.debug("Сохранение информации по делу {} в БД", parsedInfoModel.getCaseNumber());
 
@@ -65,6 +68,8 @@ public class ParsedInfoProcessor {
                     fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
                 }
             }
+
+            eventScrapingLogRepository.saveEventLog(caseEventEntity, scrapingTaskEntity);
         }));
 
         log.info("Дело {} сохранено", parsedInfoModel.getCaseNumber());

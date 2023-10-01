@@ -23,7 +23,7 @@ public class ScrapingResultHandler {
     public void skipCaseScraping(ScrapingTaskEntity scrapingTaskEntity, String caseNumber, String error) {
         log.warn("Дело {} пропущено", caseNumber);
         try {
-            courtCaseRepository.markUpdated(caseNumber, error);
+            courtCaseRepository.markUpdatedWithErrorByNumber(caseNumber, error);
         } catch (Exception e) {
             log.debug("Дело {} не удалось пометить пройденным в БД", caseNumber);
         }
@@ -46,8 +46,22 @@ public class ScrapingResultHandler {
         }
     }
 
-    public void completeCaseScraping(ScrapingTaskEntity scrapingTaskEntity, Long caseId) {
+    public void completeCaseScraping(ScrapingTaskEntity scrapingTaskEntity, Long caseId, StringBuilder error) {
+        if (error.isEmpty()) {
+            completeCaseScraping(scrapingTaskEntity, caseId);
+        } else {
+            completeCaseScrapingWithErrors(scrapingTaskEntity, caseId, error.toString());
+        }
+    }
+
+    private void completeCaseScraping(ScrapingTaskEntity scrapingTaskEntity, Long caseId) {
         scrapingTaskService.updateSucceed(scrapingTaskEntity);
         caseScrapingLogDaoDecorator.writeSuccessfulLog(scrapingTaskEntity, caseId);
+    }
+
+    private void completeCaseScrapingWithErrors(ScrapingTaskEntity scrapingTaskEntity, Long caseId, String error) {
+        scrapingTaskService.updateFailed(scrapingTaskEntity);
+        caseScrapingLogDaoDecorator.writeFailedLog(scrapingTaskEntity, caseId, error);
+        courtCaseRepository.markUpdatedWithErrorById(caseId, error);
     }
 }
