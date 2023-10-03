@@ -75,11 +75,11 @@ nssm.exe install [Имя службы]
 в окне настроек службы утилиты заполнить:  
 - на вкладке Application:  
   - Path: java (либо полный путь к исполняемому файлу Java)  
-  - Startup directory: каталог приложения
-  - Arguments: -jar scraper-{VERSION}.jar
-- На вкладке I/O:
-  - Output (stdout): файл вывода, например "output" в каталоге приложения
-  - Error (stderr): файл вывода ошибок, например "err" в каталоге приложения
+  - Startup directory: каталог приложения  
+  - Arguments: -jar scraper-{VERSION}.jar  
+- На вкладке I/O:  
+  - Output (stdout): файл вывода, например "output" в каталоге приложения  
+  - Error (stderr): файл вывода ошибок, например "err" в каталоге приложения  
 
 
 
