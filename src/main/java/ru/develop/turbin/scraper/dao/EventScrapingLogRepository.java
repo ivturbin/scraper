@@ -15,11 +15,11 @@ public class EventScrapingLogRepository {
     public void saveEventLog(CaseEventEntity entity, ScrapingTaskEntity scrapingTaskEntity) {
         String insertSql = "insert into event_scraping_log " +
                 "(event_id, scraping_task_id, code) " +
-                "VALUES (?, ?, ?)";
+                "values (?, ?, ?)";
 
         jdbcTemplate.update(insertSql,
-                entity.getEventId(),
+                entity.getCaseEventId(),
                 scrapingTaskEntity.getScrapingTaskId(),
-                EventScrapingCode.OK);
+                EventScrapingCode.OK.name());
     }
 }
