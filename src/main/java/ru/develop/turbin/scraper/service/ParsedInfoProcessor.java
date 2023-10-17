@@ -46,13 +46,15 @@ public class ParsedInfoProcessor {
                     .findFirst();
 
             Long caseEventId;
+            String parsedFileLink = caseEventEntity.getFileLink();
             if (eventEntityByHash.isPresent()) {
                 caseEventId = eventEntityByHash.get().getCaseEventId();
                 caseEventEntity.setCaseEventId(caseEventId);
                 caseEventRepository.update(caseEventEntity);
 
-                String fileLink = caseEventEntity.getFileLink();
-                if (fileLink != null && !fileLink.isEmpty() && !fileLink.equals(eventEntityByHash.get().getFileLink())) {
+                if (fileLinkIsNotEmpty(parsedFileLink)
+                        && eventEntityByHashNeedsFileUpdate(parsedFileLink, eventEntityByHash.get())
+                ) {
                     fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
                 }
             } else {
@@ -63,8 +65,7 @@ public class ParsedInfoProcessor {
                             caseEventEntity.getCaseEventId(), caseEventEntity.getEventHash(), e.getLocalizedMessage()));
                 }
 
-                String fileLink = caseEventEntity.getFileLink();
-                if (fileLink != null && !fileLink.isEmpty()) {
+                if (fileLinkIsNotEmpty(parsedFileLink)) {
                     fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
                 }
             }
@@ -75,6 +76,15 @@ public class ParsedInfoProcessor {
         log.info("Дело {} сохранено", parsedInfoModel.getCaseNumber());
 
         return courtCaseId;
+    }
+
+    private boolean eventEntityByHashNeedsFileUpdate(String parsedFileLink, CaseEventEntity eventEntityByHash) {
+        return !parsedFileLink.equals(eventEntityByHash.getFileLink())
+                || eventEntityByHash.getFileData() == null;
+    }
+
+    private boolean fileLinkIsNotEmpty(String fileLink) {
+        return fileLink != null && !fileLink.isEmpty();
     }
 
     private CaseEventEntity getCaseEventEntity(CourtCaseEntity caseEntity, CaseHeader header, CaseItem event) {
