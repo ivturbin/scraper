@@ -1,116 +1,115 @@
-## Веб-скрейпер
-Предназначен для загрузки данных с веб-сервиса.  
-Данные загружаются в локальную БД на Postgres в виде таблицы событий с файлами и информацией по судебным делам.  
+## Web Scraper
+Designed for downloading data from a web service.
+The data is loaded into a local PostgreSQL database in the form of event tables with files and information on court cases.
 
 ```
-ВНИМАНИЕ: ввиду ограниченности пропускной способности сервера, крайне не рекомендуется запускать приложение
-одновременно в нескольких экземплярах на разных портах/серверах, формируя запросы с одного IP-адреса.
-На текущий момент вычисленная пропускная способность сервера по выдаче данных составляет порядка 960 судебных дел 
-в сутки для одного IP-адреса.  
-Попытка увеличить данный показатель может привести к бану.
+WARNING: Due to the server's limited bandwidth, it is highly discouraged to run the application
+simultaneously in multiple instances on different ports/servers, forming requests from a single IP address.
+Currently, the estimated server bandwidth for data output is about 960 court cases per day per IP address.
+Attempting to increase this rate may result in a ban.
 ```
 
-#### 1. Требования к установке и подготовка
-- В системе должен быть установлен Google Chrome.
-- При сборке приложения использовался OpenJDK-18. Требуется такой же или аналогичный
-- Убедиться в наличии переменных среды: JAVA_HOME и PATH
-- Здесь и далее все команды в Windows PowerShell
+#### 1. Installation Requirements and Preparation
+- Google Chrome must be installed on the system.
+- The application was built using OpenJDK-18. The same or a similar version is required.
+- Ensure the presence of environment variables: JAVA_HOME and PATH.
+- All commands below are for Windows PowerShell.
 
-Проверить наличие джавы и соответствие версии:
+Check Java installation and version:
 ```
 java -version
 ```
 
-#### 2. Запуск в сеансе пользователя (для тестирования приложения)
-Шрифт, установка кодировки в консоли:
+#### 2. Running in User Session (for testing the application)
+Font and encoding settings in the console:
 Properties -> Font -> Lucida Console -> OK
 ```
 chcp 65001
 ```
-Положить заполненный application.properties рядом с джарником
+Place the filled application.properties file next to the jar file.
 
 ```
 java -jar scraper-{VERSION}.jar
 ```
+Press Ctrl+C to stop the jar execution.
 
-Ctrl+C чтобы остановить выполнение jar
-
-Файл resources/start.ps1 является скриптом powershell и содержит в себе команду запуска приложения.  
-Для использования необходимо, чтобы в одном каталоге лежали файлы:
+The file resources/start.ps1 is a PowerShell script and contains the command to run the application.
+To use it, the following files must be in the same directory:
 - application.properties
 - scraper-1.0.0.jar
 - start.ps1
 
-Назначение конфигураций файла application.properties:
+Configuration settings in the application.properties file:
 ```
 
-server.port - номер порта приложения
+server.port - application port number
 
-configuration.selenium_awaiting_timeout - таймаут, в течение которого селениум продолжает опрашивать драйвер на наличие веб элемента  
-configuration.scraping_interval - интервал скрепинга, мс (рекомендуется не менее 80000)  
-configuration.additional_awaiting_on_error - доп. ожидание на ошибке, мс (рекомендуется не менее 20000)  
-configuration.scheduled_scraping_enabled - включение интервального скрейпинга при запуске приложения (true) 
+configuration.selenium_awaiting_timeout - timeout during which Selenium continues to poll the driver for the presence of a web element  
+configuration.scraping_interval - scraping interval in ms (recommended not less than 80000)  
+configuration.additional_awaiting_on_error - additional wait time on error in ms (recommended not less than 20000)  
+configuration.scheduled_scraping_enabled - enable interval scraping at application startup (true) 
 
-spring.main.banner-mode=off - выключить вывод баннера спринг в консоль
+spring.main.banner-mode=off - disable Spring banner output in console
 
-configuration.main_url - url сервиса
+configuration.main_url - service URL
 
-spring.datasource.url- url БД Postgresql (напр. jdbc:postgresql://msk2c:5432/KAD_db)  
-spring.datasource.driverClassName - класс драйвера (org.postgresql.Driver)  
-spring.datasource.username - имя пользователя БД  
-spring.datasource.password - пароль пользователя БД  
-springdoc.swagger-ui.tryItOutEnabled = true - убрать кнопки Try it out в Swagger UI  
-spring.main.lazy-initialization=true - ленивая инициализация бинов для быстрого запуска  
+spring.datasource.url - PostgreSQL database URL (e.g., jdbc:postgresql://msk2c:5432/KAD_db)  
+spring.datasource.driverClassName - driver class (org.postgresql.Driver)  
+spring.datasource.username - database username  
+spring.datasource.password - database user password  
+springdoc.swagger-ui.tryItOutEnabled = true - remove Try it out buttons in Swagger UI  
+spring.main.lazy-initialization=true - lazy initialization of beans for quick startup  
 ```
 
-#### 3. Установка и запуск в качестве службы Windows
-Для установки приложения в качестве службы Windows использовать утилиту nssm  
-Можно скачать по адресу: https://www.nssm.cc/download  
-Также утилита выложена в X:\7.ОИТ\iturbin
+#### 3. Installation and Running as a Windows Service
+To install the application as a Windows service, use the nssm utility.
+You can download it from: https://www.nssm.cc/download
+The utility is also available at X:\7.ОИТ\iturbin
 
-Установка службы выполняется пользователем с административными правами через команду консоли:
+Service installation is performed by a user with administrative rights through the console command:
 ```
-nssm.exe install [Имя службы]
+nssm.exe install [Service Name]
 ```
-в окне настроек службы утилиты заполнить:  
-- на вкладке Application:  
-  - Path: java (либо полный путь к исполняемому файлу Java)  
-  - Startup directory: каталог приложения  
-  - Arguments: -jar scraper-{VERSION}.jar  
-- На вкладке I/O:  
-  - Output (stdout): файл вывода, например "output" в каталоге приложения  
-  - Error (stderr): файл вывода ошибок, например "err" в каталоге приложения  
+In the service settings window of the utility, fill out:
+
+- On the Application tab:
+-- Path: java (or the full path to the Java executable)
+-- Startup directory: application directory
+-- Arguments: -jar scraper-{VERSION}.jar
+- On the I/O tab:
+-- Output (stdout): output file, e.g., "output" in the application directory
+-- Error (stderr): error output file, e.g., "err" in the application directory
 
 
 
 #### 4. API
-###### Приложение предоставляет следующие http-методы:
+###### The application provides the following HTTP methods:
 
-Запуск интервального скрейпинга.
-Шедулер в указанный в application.properties интервал будет запускать скрейпинг
+Start interval scraping.
+The scheduler will start scraping at the interval specified in application.properties.
 ```
 curl --location --request POST 'http://{host}:{port}/start'
 ```
-Остановка интервального скрейпинга.
+Stop interval scraping.
 ```
 curl --location --request POST 'http://{host}:{port}/stop'
 ```
-Скрейпинг дела по номеру.
+Scrape a case by number.
 ```
 curl --location 'http://{host}:{port}/scrape?caseNumber={Номер дела}'
 ```
-Скрейпинг всех дел из таблицы court_case. 
+Scrape all cases from the court_case table.
 ```
 curl --location --request POST 'http://{host}:{port}/scrape/all'
 ```
-Скрейпинг следующего дела.
+Scrape the next case.
 ```
 curl --location --request POST 'http://{host}:{port}/scrape/next'
 ```
-Проверка состояния приложения.
+Check the application status.
 ```
 curl --location 'http://localhost:9001/status'
 ```
 ##### 5. Swagger-UI 
-доступен по стандартному адресу
+available at the standard address
 http://localhost:{server.port}/swagger-ui/index.html
