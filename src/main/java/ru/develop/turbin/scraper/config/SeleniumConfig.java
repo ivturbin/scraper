@@ -2,6 +2,7 @@ package ru.develop.turbin.scraper.config;
 
 import com.google.common.collect.ImmutableMap;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -30,6 +31,7 @@ public class SeleniumConfig {
         //options.addArguments("--disable-plugins");                           // Отключить расширения
         options.addArguments("--disable-gpu");                                  // Disable GPU acceleration (if needed)
         options.addArguments("--start-maximized");
+        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 //        options.addArguments("--no-sandbox");                                   // Disable sandbox (Linux environments)
 //        options.addArguments("--disable-popup-blocking");                       // Disable popup blocking
 //        options.addArguments("pdfjs.disabled=true");

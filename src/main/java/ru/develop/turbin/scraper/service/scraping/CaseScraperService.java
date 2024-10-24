@@ -54,7 +54,16 @@ public class CaseScraperService {
     public void scrapeCase(String caseNumber, ScrapingTaskEntity scrapingTaskEntity) {
 
         try {
+
             driver.get(url);
+
+            List<WebElement> promoPopupCloseButton = driver.findElements(
+                    By.xpath("//*[@id=\"js\"]/div[13]/div[2]/div/div/div/div/a[1]"));
+            if (!promoPopupCloseButton.isEmpty()) {
+                Thread.sleep(rand.nextInt(1500) + 500);
+                promoPopupCloseButton.get(0).click();
+            }
+
             Thread.sleep(rand.nextInt(1500) + 500);
 
             WebElement caseNumberTextBox = driver.findElement(By.xpath("//input[@placeholder='например, А50-5568/08']"));
