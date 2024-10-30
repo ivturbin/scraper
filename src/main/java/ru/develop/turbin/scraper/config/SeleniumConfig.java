@@ -21,6 +21,7 @@ public class SeleniumConfig {
 //    public ChromeOptions chromeOptions(@Value("${configuration.download_directory}") String downloadPath) {
     public ChromeOptions chromeOptions() {
         ChromeOptions options = new ChromeOptions();
+        options.setBrowserVersion("129.0.6668.100");
         options.addArguments("--disable-blink-features=AutomationControlled");
  //       options.addArguments("download.default_directory=" + downloadPath);
 //        options.addArguments("--download.prompt_for_download=false");             // Optional: Disable the download prompt
@@ -67,6 +68,7 @@ public class SeleniumConfig {
     @Bean
     public WebDriverWait driverWait(WebDriver driver,
                                         @Value("${configuration.selenium_awaiting_timeout:20000}") Long timeout) {
+
         return new WebDriverWait(driver, Duration.ofMillis(timeout));
     }
 }
