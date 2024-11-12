@@ -3,13 +3,14 @@ package ru.develop.turbin.scraper.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.develop.turbin.scraper.dao.CaseEventRepository;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import static ru.develop.turbin.scraper.Utils.getDownloadsDirectory;
 
 @Service
 @RequiredArgsConstructor
@@ -71,11 +72,6 @@ public class FileDownloader {
         if (fileData != null) {
             caseEventRepository.updateFileDataById(fileData, eventId);
         }
-    }
-
-    private String getDownloadsDirectory() {
-        String userHome = System.getProperty("user.home");
-        return userHome + File.separator + "Downloads" + File.separator;
     }
 
     private String getFileNameFromLink(String link) {
