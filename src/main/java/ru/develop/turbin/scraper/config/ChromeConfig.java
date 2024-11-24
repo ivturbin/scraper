@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(prefix = "configuration", name = "browser", havingValue = "chrome")
 public class ChromeConfig {
 
+    //todo разобраться с опциями
     @Bean
     public ChromeOptions chromeOptions() {
         ChromeOptions options = new ChromeOptions();
@@ -58,10 +59,6 @@ public class ChromeConfig {
     @Bean
     public WebDriver chromeDriver(ChromeOptions options) {
         WebDriverManager.chromedriver().setup();
-//        WebDriverManager.chromedriver().driverVersion("130.0.6723.92");
-//        WebDriverManager.chromedriver().config().setChromeDriverVersion("130.0.6723.92");
-//        WebDriverManager.chromedriver().config().setChromeVersion("130.0.6723.92");
-
         return new ChromeDriver(options);
     }
 
