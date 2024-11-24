@@ -1,7 +1,6 @@
 package ru.develop.turbin.scraper.service.scraping;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
@@ -17,8 +16,6 @@ import ru.develop.turbin.scraper.model.CaseItem;
 import ru.develop.turbin.scraper.model.ParsedInfoModel;
 import ru.develop.turbin.scraper.service.ScrapingResultHandler;
 import ru.develop.turbin.scraper.service.ParsedInfoProcessor;
-import ru.develop.turbin.scraper.service.parsing.HeaderParser;
-import ru.develop.turbin.scraper.service.parsing.ItemParser;
 import ru.develop.turbin.scraper.service.parsing.ParsingFacade;
 
 import java.time.Duration;
@@ -34,13 +31,12 @@ public class CaseScraperService {
 
     private final WebDriver driver;
     private final WebDriverWait wait;
-    private final HeaderParser headerParser;
-    private final ItemParser itemParser;
     private final ParsingFacade parsingFacade;
     private final ParsedInfoProcessor parsedInfoProcessor;
     private final ScrapingResultHandler scrapingResultHandler;
-    private JavascriptExecutor javascriptExecutor;
+
     private Random rand;
+    private JavascriptExecutor javascriptExecutor;
 
     @Value("${configuration.main_url}")
     private String url;
@@ -70,7 +66,7 @@ public class CaseScraperService {
             caseNumberTextBox.sendKeys(caseNumber);
             driver.manage().timeouts().implicitlyWait(Duration.ofMillis(5000));
 
-            WebElement searchButton = driver.findElement(By.xpath("//button[@alt='Найти']"));
+            WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@alt='Найти']")));
             searchButton.click();
 
             Thread.sleep(rand.nextInt(2000) + 1000);
@@ -147,9 +143,4 @@ public class CaseScraperService {
         }
     }
 
-    @PreDestroy
-    public void preDestroy() {
-        driver.quit();
-        log.info("Драйвер остановлен");
-    }
 }
