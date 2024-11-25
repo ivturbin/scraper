@@ -57,8 +57,14 @@ public class ChromeConfig {
     }
 
     @Bean
+    public WebDriverManager webDriverManager() {
+        WebDriverManager webDriverManager = WebDriverManager.chromedriver();
+        webDriverManager.setup();
+        return webDriverManager;
+    }
+
+    @Bean
     public WebDriver chromeDriver(ChromeOptions options) {
-        WebDriverManager.chromedriver().setup();
         return new ChromeDriver(options);
     }
 
