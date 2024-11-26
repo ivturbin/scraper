@@ -41,24 +41,22 @@ To use it, the following files must be in the same directory:
 
 Configuration settings in the application.properties file:
 ```
-
 server.port - application port number
-
-configuration.selenium_awaiting_timeout - timeout during which Selenium continues to poll the driver for the presence of a web element  
-configuration.scraping_interval - scraping interval in ms (recommended not less than 80000)  
-configuration.additional_awaiting_on_error - additional wait time on error in ms (recommended not less than 20000)  
-configuration.scheduled_scraping_enabled - enable interval scraping at application startup (true) 
-
-spring.main.banner-mode=off - disable Spring banner output in console
-
-configuration.main_url - service URL
 
 spring.datasource.url - PostgreSQL database URL (e.g., jdbc:postgresql://msk2c:5432/KAD_db)  
 spring.datasource.driverClassName - driver class (org.postgresql.Driver)  
 spring.datasource.username - database username  
 spring.datasource.password - database user password  
-springdoc.swagger-ui.tryItOutEnabled = true - remove Try it out buttons in Swagger UI  
-spring.main.lazy-initialization=true - lazy initialization of beans for quick startup  
+springdoc.swagger-ui.tryItOutEnabled = true - remove Try it out buttons in Swagger UI
+spring.main.lazy-initialization=true - lazy initialization of beans for quick startup
+spring.main.banner-mode=off - disable Spring banner output in console
+
+configuration.main_url - service URL
+configuration.browser - which browser to use
+configuration.selenium_awaiting_timeout - timeout during which Selenium continues to poll the driver for the presence of a web element  
+configuration.scraping_interval - scraping interval in ms (recommended not less than 80000)  
+configuration.additional_awaiting_on_error - additional wait time on error in ms (recommended not less than 20000)  
+configuration.scheduled_scraping_enabled - enable interval scraping at application startup (true) 
 ```
 
 #### 3. Installation and Running as a Windows Service
