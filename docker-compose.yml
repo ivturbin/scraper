@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  #Тестовая БД
+  postgres:
+    build:
+      context: .
+    container_name: scraper-local-db
+    ports:
+      - "5000:5432" # Проброс порта
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: KAD_db

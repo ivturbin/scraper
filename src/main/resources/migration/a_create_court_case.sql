@@ -1,3 +1,5 @@
+create sequence court_case_id_seq;
+
 create table public.court_case
 (
     case_id     bigint                   default nextval('court_case_id_seq'::regclass) not null
