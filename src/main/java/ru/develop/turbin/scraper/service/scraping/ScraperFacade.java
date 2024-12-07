@@ -50,9 +50,9 @@ public class ScraperFacade {
     }
 
     public void scrapeCaseByNumber(String caseNumber) {
-        ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_SINGLE);
-        caseScraperService.scrapeCase(caseNumber, scrapingTaskEntity);
-        scrapingTaskService.endScrapingTask(scrapingTaskEntity);
+      //  ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_SINGLE);
+        caseScraperService.scrapeCase(caseNumber, null);
+       // scrapingTaskService.endScrapingTask(scrapingTaskEntity);
     }
 
     private void scrapeCaseWithErrorsHandling(String caseNumber) {

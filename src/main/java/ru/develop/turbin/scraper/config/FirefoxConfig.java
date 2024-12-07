@@ -9,9 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static ru.develop.turbin.scraper.Utils.getDownloadsDirectory;
-
-//todo скрейпинг не работает в файрфокс
+//todo скрейпинг не работает в файрфокс. Скорее всего нужен конфиг наподобие --disable-blink-features=AutomationControlled
 @Configuration
 @ConditionalOnProperty(prefix = "configuration", name = "browser", havingValue = "firefox")
 public class FirefoxConfig {
@@ -24,7 +22,7 @@ public class FirefoxConfig {
     }
 
     @Bean
-    public FirefoxOptions firefoxOptions() {
+    public FirefoxOptions firefoxOptions(String downloadsDirectory) {
         FirefoxOptions options = new FirefoxOptions();
 
        // options.addArguments("--disable-blink-features=AutomationControlled");
@@ -72,7 +70,7 @@ public class FirefoxConfig {
 
         profile.setPreference("browser.download.folderList", 2);
         profile.setPreference("browser.download.manager.showWhenStarting", false);
-        profile.setPreference("browser.download.dir", getDownloadsDirectory());
+        profile.setPreference("browser.download.dir", downloadsDirectory);
         profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/pdf");
         profile.setPreference("pdfjs.disabled", true);
 

@@ -10,14 +10,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static ru.develop.turbin.scraper.Utils.getDownloadsDirectory;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class FileDownloader {
     private final CaseEventRepository caseEventRepository;
     private final WebDriver driver;
+    private final String downloadsDirectory;
 
     public void download(String fileLink, Long eventId) {
         driver.get(fileLink);
@@ -31,7 +30,6 @@ public class FileDownloader {
 
         byte[] fileData = null;
 
-        String downloadsDirectory = getDownloadsDirectory();
         String fileName = getFileNameFromLink(fileLink);
         File fileToOpen = new File(downloadsDirectory, fileName);
 
