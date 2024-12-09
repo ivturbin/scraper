@@ -18,7 +18,6 @@ import ru.develop.turbin.scraper.service.ScrapingResultHandler;
 import ru.develop.turbin.scraper.service.ParsedInfoProcessor;
 import ru.develop.turbin.scraper.service.parsing.ParsingFacade;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -50,7 +49,6 @@ public class CaseScraperService {
     public void scrapeCase(String caseNumber, ScrapingTaskEntity scrapingTaskEntity) {
 
         try {
-
             driver.get(url);
 
             List<WebElement> promoPopupCloseButton = driver.findElements(
@@ -62,9 +60,8 @@ public class CaseScraperService {
 
             Thread.sleep(rand.nextInt(1500) + 500);
 
-            WebElement caseNumberTextBox = driver.findElement(By.xpath("//input[@placeholder='например, А50-5568/08']"));
+            WebElement caseNumberTextBox = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='например, А50-5568/08']")));
             caseNumberTextBox.sendKeys(caseNumber);
-            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(5000));
 
             WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@alt='Найти']")));
             searchButton.click();
