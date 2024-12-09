@@ -36,7 +36,7 @@ public class ChromeConfig {
     }
 
     @Bean
-    public WebDriver chromeDriver(ChromeOptions options) {
+    public WebDriver chromeDriver(ChromeOptions options, WebDriverManager webDriverManager) { //Чтобы сначала создался бин менеджера
         return new ChromeDriver(options);
     }
 
