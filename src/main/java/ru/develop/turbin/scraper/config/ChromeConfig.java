@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 @ConditionalOnProperty(prefix = "configuration", name = "browser", havingValue = "chrome")
 public class ChromeConfig {
@@ -25,6 +27,7 @@ public class ChromeConfig {
         options.setExperimentalOption("prefs", ImmutableMap.of(
                 "plugins.always_open_pdf_externally", true
         ));
+        options.setExperimentalOption("excludeSwitches", List.of("enable-automation")); //Чтобы не отображалась панель "Chrome is being controlled by automated test software"
         return options;
     }
 
