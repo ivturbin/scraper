@@ -31,6 +31,7 @@ public class ChromeConfig {
     @Bean
     public WebDriverManager webDriverManager() {
         WebDriverManager webDriverManager = WebDriverManager.chromedriver();
+        webDriverManager.avoidShutdownHook();
         webDriverManager.setup();
         return webDriverManager;
     }
