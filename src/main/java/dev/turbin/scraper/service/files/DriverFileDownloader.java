@@ -1,4 +1,4 @@
-package dev.turbin.scraper.service;
+package dev.turbin.scraper.service.files;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,14 +10,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * @deprecated реализована загрузка без драйвера, требуется удостовериться в работоспособности.
+ */
 @Service
 @RequiredArgsConstructor
+@Deprecated
 @Slf4j
-public class FileDownloader {
+public class DriverFileDownloader implements FileDownloader {
     private final CaseEventRepository caseEventRepository;
     private final WebDriver driver;
     private final String downloadsDirectory;
 
+    @Override
     public void download(String fileLink, Long eventId) {
         driver.get(fileLink);
         log.info("Файл загружен {}", fileLink);
