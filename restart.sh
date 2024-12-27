@@ -3,16 +3,13 @@
 HOME="{Рабочая директория}"
 
 JAR_PATH="$HOME/scraper-{Версия}.jar"
-LOG_PATH="$HOME/scraper.log"
-OLD_LOG="$HOME/$(date +"%Y-%m-%d_%H:%M:%S")_$(basename "$LOG_PATH")"
+LOG_PATH="$HOME/$(date +"%Y-%m-%d_%H:%M:%S")_scraper.log"
 PID_FILE="$HOME/scraper.pid"
 
 echo ""
 
 # Если PID-файл существует, завершить процесс
 if [ -f "$PID_FILE" ]; then
-    # Переименовать файл логов
-    mv "$LOG_PATH" "$OLD_LOG"
     PID=$(cat "$PID_FILE")
     if ps -p $PID > /dev/null; then
         echo "Stopping existing process with PID $PID"

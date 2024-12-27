@@ -33,18 +33,31 @@ java -version
 - application.properties
 - scraper-{Версия}.jar
 
+Из рабочей директории:
 ```
-java -jar scraper-{VERSION}.jar
+sudo java -jar "scraper-{Версия}.jar" &> "$(date +"%Y-%m-%d_%H:%M:%S")_scraper.log" 2>&1 &
 ```
-**Ctrl+C** чтобы остановить выполнение jar
+**Ctrl+C** чтобы остановить выполнение jar.
 
-##### 2.1 Detached запуск скриптом
+Либо detached:
+```
+nohup sudo java -jar "scraper-{Версия}.jar" &> "$(date +"%Y-%m-%d_%H:%M:%S")_scraper.log" 2>&1 &
+```
+##### 2.1 Запуск скриптом
 
 Файл restart.sh является скриптом перезапуска приложения (приложение будет запущено, если и не запускалось до этого).  
 В рабочей директории должны быть:
 - application.properties
 - scraper-{Версия}.jar
 - restart.sh
+
+Запуск:
+```
+chmod +x restart.sh
+```
+```
+sudo ./restart.sh
+```
 
 _В restart.sh необходимо вписать путь до рабочей директории включая саму директорию и версию скрейпера._
 
