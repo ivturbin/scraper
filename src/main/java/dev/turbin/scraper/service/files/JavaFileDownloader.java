@@ -4,7 +4,10 @@ import dev.turbin.scraper.dao.CaseEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,7 +15,7 @@ import java.net.URL;
 
 @Service
 @RequiredArgsConstructor
-@Primary
+@ConditionalOnMissingBean(FileDownloader.class)
 @Slf4j
 public class JavaFileDownloader implements FileDownloader {
     private final CaseEventRepository caseEventRepository;

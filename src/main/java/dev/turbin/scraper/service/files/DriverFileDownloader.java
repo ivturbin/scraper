@@ -3,6 +3,7 @@ package dev.turbin.scraper.service.files;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import dev.turbin.scraper.dao.CaseEventRepository;
 
@@ -15,7 +16,7 @@ import java.io.IOException;
  */
 @Service
 @RequiredArgsConstructor
-@Deprecated
+@ConditionalOnProperty(prefix = "configuration", name = "download", havingValue = "java")
 @Slf4j
 public class DriverFileDownloader implements FileDownloader {
     private final CaseEventRepository caseEventRepository;
@@ -37,16 +38,6 @@ public class DriverFileDownloader implements FileDownloader {
 
         String fileName = getFileNameFromLink(fileLink);
         File fileToOpen = new File(downloadsDirectory, fileName);
-
-//        if (fileToOpen.exists()) {
-//            try {
-//                fileData = Files.readAllBytes(Paths.get(downloadsDirectory + fileName));
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        } else {
-//            log.error("Файл не найден: {}", fileToOpen.getAbsolutePath());
-//        }
 
         if (fileToOpen.exists()) {
             fileData = new byte[(int) fileToOpen.length()];
