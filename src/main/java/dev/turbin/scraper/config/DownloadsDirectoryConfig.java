@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import java.io.File;
 
 @Configuration
-@Deprecated
 @Slf4j
 public class DownloadsDirectoryConfig {
 

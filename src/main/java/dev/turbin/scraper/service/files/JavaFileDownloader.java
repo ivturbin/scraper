@@ -5,9 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,6 +25,7 @@ public class JavaFileDownloader implements FileDownloader {
         String fileName = splittedLink[splittedLink.length - 1];
 
         try {
+            //todo видимо так загружать с арбитра не даёт капча
             fileData = IOUtils.toByteArray(new URL(fileLink));
         } catch (IOException e) {
             log.error("Ошибка чтения файла: {}", fileName);

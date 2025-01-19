@@ -12,7 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * @deprecated реализована загрузка без драйвера, требуется удостовериться в работоспособности.
+ * Реализована загрузка без драйвера, требуется удостовериться в работоспособности.
  */
 @Service
 @RequiredArgsConstructor
