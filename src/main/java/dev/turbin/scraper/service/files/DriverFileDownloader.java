@@ -26,7 +26,7 @@ public class DriverFileDownloader implements FileDownloader {
     @Override
     public void download(String fileLink, Long eventId) {
         driver.get(fileLink);
-        log.info("Файл загружен {}", fileLink);
+        log.debug("Файл загружен {}", fileLink);
 
         try {
             Thread.sleep(1000L);
@@ -44,7 +44,7 @@ public class DriverFileDownloader implements FileDownloader {
 
             try (FileInputStream fileInputStream = new FileInputStream(fileToOpen)) {
                 if (fileInputStream.read(fileData) == fileToOpen.length()) {
-                    log.info("Файл успешно считан {}", fileToOpen.getAbsolutePath());
+                    log.info("Файл загружен успешно {}", fileToOpen.getAbsolutePath());
                 } else {
                     fileData = null;
                     log.error("Файл считан не полностью {}", fileToOpen.getAbsolutePath());
@@ -54,9 +54,9 @@ public class DriverFileDownloader implements FileDownloader {
                 log.error("Ошибка чтения файла: {}", fileToOpen.getAbsolutePath());
             } finally {
                 if (fileToOpen.delete()) {
-                    log.info("Файл успешно удален с диска {}", fileToOpen.getAbsolutePath());
+                    log.debug("Файл успешно удален с диска {}", fileToOpen.getAbsolutePath());
                 } else {
-                    log.debug("Не удалось удалить файл с диска {}", fileToOpen.getAbsolutePath());
+                    log.warn("Не удалось удалить файл с диска {}", fileToOpen.getAbsolutePath());
                 }
             }
         } else {
