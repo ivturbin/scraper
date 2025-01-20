@@ -44,10 +44,10 @@ public class DriverFileDownloader implements FileDownloader {
 
             try (FileInputStream fileInputStream = new FileInputStream(fileToOpen)) {
                 if (fileInputStream.read(fileData) == fileToOpen.length()) {
-                    log.info("Файл загружен успешно {}", fileToOpen.getAbsolutePath());
+                    log.debug("Файл загружен на диск {}", fileToOpen.getAbsolutePath());
                 } else {
                     fileData = null;
-                    log.error("Файл считан не полностью {}", fileToOpen.getAbsolutePath());
+                    log.error("Ошибка чтения загруженного файла с диска {}", fileToOpen.getAbsolutePath());
                 }
             } catch (IOException e) {
                 fileData = null;
@@ -65,6 +65,7 @@ public class DriverFileDownloader implements FileDownloader {
 
         if (fileData != null) {
             caseEventRepository.updateFileDataById(fileData, eventId);
+            log.info("Файл загружен в БД {}", fileName);
         }
     }
 
