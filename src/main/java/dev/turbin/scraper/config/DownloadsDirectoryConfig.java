@@ -12,7 +12,7 @@ public class DownloadsDirectoryConfig {
 
     @Bean("downloadsDirectory")
     public String downloadsDirectory() {
-        String downloadsDirectory = System.getProperty("user.home") + File.separator + "Downloads" + File.separator;
+        String downloadsDirectory = System.getProperty("user.home") + File.separator + "kad" + File.separator + "tmp";
         log.info("downloadsDirectory: {}", downloadsDirectory);
         return downloadsDirectory;
     }
