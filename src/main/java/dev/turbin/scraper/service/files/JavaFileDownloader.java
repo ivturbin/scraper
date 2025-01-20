@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.By;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "configuration", name = "download", havingValue = "java")
+@ConditionalOnProperty(prefix = "configuration.download", name = "method", havingValue = "java")
 @Slf4j
 public class JavaFileDownloader implements FileDownloader {
     private final CaseEventRepository caseEventRepository;
