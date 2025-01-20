@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "configuration", name = "download", havingValue = "java")
+@ConditionalOnProperty(prefix = "configuration", name = "download", havingValue = "driver")
 @Slf4j
 public class DriverFileDownloader implements FileDownloader {
     private final CaseEventRepository caseEventRepository;
