@@ -32,7 +32,7 @@ public class ScheduledScrapingTask {
                 initScrapingTask();
                 log.info("Инициализирована задача интервального скрейпинга {}", scrapingTaskEntity.getScrapingTaskId());
             }
-            log.info("Интервальный скрейпинг запущен по расписанию");
+            log.debug("Интервальный скрейпинг запущен по расписанию");
             scraperFacade.scrapeNextCase(scrapingTaskEntity);
         } else if (scrapingTaskEntity != null) {
             finishScheduledTask();
