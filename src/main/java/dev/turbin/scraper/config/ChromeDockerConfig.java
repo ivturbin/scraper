@@ -1,6 +1,5 @@
 package dev.turbin.scraper.config;
 
-import com.google.common.collect.ImmutableMap;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
