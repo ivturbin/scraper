@@ -4,15 +4,15 @@ import dev.turbin.scraper.service.files.FileDownloader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import dev.turbin.scraper.dao.CaseEventRepository;
-import dev.turbin.scraper.dao.CourtCaseRepository;
-import dev.turbin.scraper.dao.EventScrapingLogRepository;
+import dev.turbin.scraper.repository.CaseEventRepository;
+import dev.turbin.scraper.repository.CourtCaseRepository;
+import dev.turbin.scraper.repository.EventScrapingLogRepository;
 import dev.turbin.scraper.entity.CaseEventEntity;
 import dev.turbin.scraper.entity.CourtCaseEntity;
 import dev.turbin.scraper.entity.ScrapingTaskEntity;
 import dev.turbin.scraper.model.CaseHeader;
 import dev.turbin.scraper.model.CaseItem;
-import dev.turbin.scraper.model.ParsedInfoModel;
+import dev.turbin.scraper.model.ParsedCaseModel;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +29,7 @@ public class ParsedInfoProcessor {
     private final FileDownloader fileDownloader;
     private final EventScrapingLogRepository eventScrapingLogRepository;
 
-    public Long process(ParsedInfoModel parsedInfoModel, ScrapingTaskEntity scrapingTaskEntity) {
+    public Long process(ParsedCaseModel parsedInfoModel, ScrapingTaskEntity scrapingTaskEntity) {
 
         log.debug("Сохранение информации по делу {} в БД", parsedInfoModel.getCaseNumber());
 
@@ -73,6 +73,8 @@ public class ParsedInfoProcessor {
 
             eventScrapingLogRepository.saveEventLog(caseEventEntity, scrapingTaskEntity);
         }));
+
+
 
         log.info("Дело {} сохранено", parsedInfoModel.getCaseNumber());
 
@@ -119,7 +121,7 @@ public class ParsedInfoProcessor {
         return caseEventEntity;
     }
 
-    private CourtCaseEntity getCaseEntity(ParsedInfoModel parsedInfoModel) {
+    private CourtCaseEntity getCaseEntity(ParsedCaseModel parsedInfoModel) {
         CourtCaseEntity caseEntity = courtCaseRepository.getByNumber(parsedInfoModel.getCaseNumber());
         Long courtCaseId;
         if (caseEntity == null) {

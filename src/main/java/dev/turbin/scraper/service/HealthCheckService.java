@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import dev.turbin.scraper.dao.HealthCheckRepository;
+import dev.turbin.scraper.repository.HealthCheckRepository;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

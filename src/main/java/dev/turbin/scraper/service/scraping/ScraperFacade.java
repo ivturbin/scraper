@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import dev.turbin.scraper.dao.CourtCaseRepository;
+import dev.turbin.scraper.repository.CourtCaseRepository;
 import dev.turbin.scraper.entity.ScrapingTaskEntity;
 import dev.turbin.scraper.enums.ScrapingTaskTypeEnum;
 import dev.turbin.scraper.service.ScrapingTaskService;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ScraperFacade {
-    private final CaseScraperService caseScraperService;
+    private final Scraper scraper;
     private final CourtCaseRepository courtCaseRepository;
     private final ScrapingTaskService scrapingTaskService;
 
@@ -27,7 +27,7 @@ public class ScraperFacade {
         ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_ALL);
         List<String> caseNumbers = courtCaseRepository.getAllNumbersToScrape();
         caseNumbers.forEach(number -> {
-            caseScraperService.scrapeCase(number, scrapingTaskEntity);
+            scraper.scrapeCase(number, scrapingTaskEntity);
             try {
                 Thread.sleep(scrapingInterval);
             } catch (InterruptedException e) {
@@ -40,7 +40,7 @@ public class ScraperFacade {
 
     public void scrapeNextCase(ScrapingTaskEntity scrapingTaskEntity) {
         String caseNumber = courtCaseRepository.getNumberToScrape();
-        caseScraperService.scrapeCase(caseNumber, scrapingTaskEntity);
+        scraper.scrapeCase(caseNumber, scrapingTaskEntity);
     }
 
     public void getAndScrapeNextCase() {
@@ -51,7 +51,7 @@ public class ScraperFacade {
 
     public void scrapeCaseByNumber(String caseNumber) {
         ScrapingTaskEntity scrapingTaskEntity = scrapingTaskService.startScrapingTask(ScrapingTaskTypeEnum.MANUAL_SINGLE);
-        caseScraperService.scrapeCase(caseNumber, scrapingTaskEntity);
+        scraper.scrapeCase(caseNumber, scrapingTaskEntity);
         scrapingTaskService.endScrapingTask(scrapingTaskEntity);
     }
 

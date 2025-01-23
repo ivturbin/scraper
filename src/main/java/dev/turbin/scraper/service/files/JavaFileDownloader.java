@@ -1,6 +1,6 @@
 package dev.turbin.scraper.service.files;
 
-import dev.turbin.scraper.dao.CaseEventRepository;
+import dev.turbin.scraper.repository.CaseEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;

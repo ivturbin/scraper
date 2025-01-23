@@ -2,7 +2,7 @@ package dev.turbin.scraper.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import dev.turbin.scraper.dao.ScrapingTaskRepository;
+import dev.turbin.scraper.repository.ScrapingTaskRepository;
 import dev.turbin.scraper.entity.ScrapingTaskEntity;
 import dev.turbin.scraper.enums.ScrapingTaskStatusEnum;
 import dev.turbin.scraper.enums.ScrapingTaskTypeEnum;

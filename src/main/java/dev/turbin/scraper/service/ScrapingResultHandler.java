@@ -1,10 +1,11 @@
 package dev.turbin.scraper.service;
 
+import dev.turbin.scraper.enums.CaseScrapingCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import dev.turbin.scraper.dao.CourtCaseRepository;
+import dev.turbin.scraper.repository.CourtCaseRepository;
 import dev.turbin.scraper.entity.ScrapingTaskEntity;
 import dev.turbin.scraper.enums.ScrapingError;
 
@@ -15,7 +16,7 @@ public class ScrapingResultHandler {
 
     private final CourtCaseRepository courtCaseRepository;
     private final ScrapingTaskService scrapingTaskService;
-    private final CaseScrapingLogDaoDecorator caseScrapingLogDaoDecorator;
+    private final CaseScrapingLogService caseScrapingLogService;
 
     @Value("${configuration.additional_awaiting_on_error:20000}")
     private Long additionalAwaitingOnError;
@@ -37,12 +38,12 @@ public class ScrapingResultHandler {
             log.debug("Дело {} не найдено в БД", caseNumber);
         }
 
-        caseScrapingLogDaoDecorator.writeFailedLog(scrapingTaskEntity, caseId, error);
+        caseScrapingLogService.writeLog(scrapingTaskEntity, caseId, CaseScrapingCode.SKIPPED, error);
 
         try {
             Thread.sleep(additionalAwaitingOnError);
         } catch (InterruptedException e) {
-            log.error(ScrapingError.THREAD_ERROR.getLogMessage(), caseNumber);
+            log.error(ScrapingError.THREAD_SLEEP_ERROR.getLogMessage(), caseNumber);
         }
     }
 
@@ -56,12 +57,12 @@ public class ScrapingResultHandler {
 
     private void completeCaseScraping(ScrapingTaskEntity scrapingTaskEntity, Long caseId) {
         scrapingTaskService.updateSucceed(scrapingTaskEntity);
-        caseScrapingLogDaoDecorator.writeSuccessfulLog(scrapingTaskEntity, caseId);
+        caseScrapingLogService.writeLog(scrapingTaskEntity, caseId, CaseScrapingCode.OK, null);
     }
 
     private void completeCaseScrapingWithErrors(ScrapingTaskEntity scrapingTaskEntity, Long caseId, String error) {
         scrapingTaskService.updateFailed(scrapingTaskEntity);
-        caseScrapingLogDaoDecorator.writeFailedLog(scrapingTaskEntity, caseId, error);
+        caseScrapingLogService.writeLog(scrapingTaskEntity, caseId, CaseScrapingCode.WITH_ERRORS, error);
         courtCaseRepository.markUpdatedWithErrorById(caseId, error);
     }
 }

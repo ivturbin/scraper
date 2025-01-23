@@ -1,5 +1,6 @@
 package dev.turbin.scraper.service.parsing;
 
+import dev.turbin.scraper.model.ParsedCaseModel;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,13 +16,18 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class ParsingFacade {
+public class CaseParser {
     private final HeaderParser headerParser;
     private final ItemParser itemParser;
 
-    public Map<CaseHeader, List<CaseItem>> getParsedItemsMap(List<WebElement> headerWebElements,
-                                                             List<WebElement> itemContainers,
-                                                             StringBuilder errorBuilder) {
+    public ParsedCaseModel getParsedCaseModel(String caseNumber, String caseLink,
+                                              List<WebElement> headerWebElements,
+                                              List<WebElement> itemContainers) {
+
+        ParsedCaseModel parsedInfoModel = new ParsedCaseModel();
+        parsedInfoModel.setCaseNumber(caseNumber);
+        parsedInfoModel.setCaseLink(caseLink);
+
         Map<CaseHeader, List<CaseItem>> parsedEvents = new HashMap<>();
 
 
@@ -32,7 +38,7 @@ public class ParsingFacade {
                 Document headersDocument = Jsoup.parse(headerWebElements.get(i).getAttribute(("outerHTML")));
                 caseHeader = headerParser.parseHeader(headersDocument.children());
             } catch (Exception e) {
-                errorBuilder.append(String.format("Ошибка парсинга хэдера [%d]. ", i))
+                parsedInfoModel.getErrorBuilder().append(String.format("Ошибка парсинга хэдера [%d]. ", i))
                         .append(e.getLocalizedMessage());
                 continue;
             }
@@ -41,7 +47,7 @@ public class ParsingFacade {
             try {
                 itemsContainerDocument = Jsoup.parse(itemContainers.get(i).getAttribute(("outerHTML")));
             } catch (Exception e) {
-                errorBuilder.append(String.format("Не удалось спарсить контейнер ивентов для хэдера [%d]. ", i));
+                parsedInfoModel.getErrorBuilder().append(String.format("Не удалось спарсить контейнер ивентов для хэдера [%d]. ", i));
                 continue;
             }
 
@@ -49,12 +55,15 @@ public class ParsingFacade {
             if (itemsContainerElement != null) {
                 Element itemsWrapperElement = itemsContainerElement.children().first();
                 if (itemsWrapperElement != null) {
-                    List<CaseItem> caseItems = itemParser.parseItems(itemsWrapperElement.children(), errorBuilder);
+                    List<CaseItem> caseItems = itemParser.parseItems(itemsWrapperElement.children(), parsedInfoModel.getErrorBuilder());
                     parsedEvents.put(caseHeader, caseItems);
                 }
             }
         }
 
-        return parsedEvents;
+
+        parsedInfoModel.setParsedEventsByHeader(parsedEvents);
+
+        return parsedInfoModel;
     }
 }

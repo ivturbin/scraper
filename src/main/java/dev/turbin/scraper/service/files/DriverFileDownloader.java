@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import dev.turbin.scraper.dao.CaseEventRepository;
+import dev.turbin.scraper.repository.CaseEventRepository;
 
 import java.io.File;
 import java.io.FileInputStream;

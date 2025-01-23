@@ -20,7 +20,11 @@ public class ScheduledScrapingTask {
     private final ScraperFacade scraperFacade;
     private final ScrapingTaskService scrapingTaskService;
 
+    //todo Насколько разумно хранить здесь таску? Можно просто селектить последнюю из базы
     private ScrapingTaskEntity scrapingTaskEntity;
+
+    //todo добавить атомарный счётчик. При превышении порога ошибок (вызов scrapingResultHandler.skipCaseScraping())
+    // прерывать работу скрейпера на какое-то время
 
     @Value("${configuration.scheduled_scraping_enabled:false}")
     private boolean isScheduledScrapingEnabled;

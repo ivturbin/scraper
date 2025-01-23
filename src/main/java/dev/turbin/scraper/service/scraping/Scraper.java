@@ -11,26 +11,23 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import dev.turbin.scraper.entity.ScrapingTaskEntity;
 import dev.turbin.scraper.enums.ScrapingError;
-import dev.turbin.scraper.model.CaseHeader;
-import dev.turbin.scraper.model.CaseItem;
-import dev.turbin.scraper.model.ParsedInfoModel;
+import dev.turbin.scraper.model.ParsedCaseModel;
 import dev.turbin.scraper.service.ScrapingResultHandler;
 import dev.turbin.scraper.service.ParsedInfoProcessor;
-import dev.turbin.scraper.service.parsing.ParsingFacade;
+import dev.turbin.scraper.service.parsing.CaseParser;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 @ConditionalOnProperty("configuration.main_url")
 @Slf4j
-public class CaseScraperService {
+public class Scraper {
 
     private final WebDriver driver;
     private final WebDriverWait wait;
-    private final ParsingFacade parsingFacade;
+    private final CaseParser caseParser;
     private final ParsedInfoProcessor parsedInfoProcessor;
     private final ScrapingResultHandler scrapingResultHandler;
 
@@ -117,17 +114,10 @@ public class CaseScraperService {
                 throw new RuntimeException(String.format("Не обнаружено элементов items-container для дела %s", caseNumber));
             }
 
-            ParsedInfoModel parsedInfoModel = new ParsedInfoModel();
-            parsedInfoModel.setCaseNumber(caseNumber);
-            parsedInfoModel.setCaseLink(caseLink);
+            ParsedCaseModel parsedCaseModel = caseParser.getParsedCaseModel(caseNumber, caseLink, headerWebElementList, itemsContainerWebElementList);
+            Long caseId = parsedInfoProcessor.process(parsedCaseModel, scrapingTaskEntity);
+            scrapingResultHandler.completeCaseScraping(scrapingTaskEntity, caseId, parsedCaseModel.getErrorBuilder());
 
-            StringBuilder errorBuilder = new StringBuilder();
-            Map<CaseHeader, List<CaseItem>> parsedEvents = parsingFacade.getParsedItemsMap(headerWebElementList, itemsContainerWebElementList, errorBuilder);
-            parsedInfoModel.setParsedEventsByHeader(parsedEvents);
-
-            Long caseId = parsedInfoProcessor.process(parsedInfoModel, scrapingTaskEntity);
-
-            scrapingResultHandler.completeCaseScraping(scrapingTaskEntity, caseId, errorBuilder);
         } catch (NoSuchElementException e) {
             log.error(ScrapingError.ELEMENT_NOT_FOUND.getLogMessage(), caseNumber, e.getLocalizedMessage());
             scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.ELEMENT_NOT_FOUND.getMessage() + e.getLocalizedMessage());
@@ -135,8 +125,8 @@ public class CaseScraperService {
             log.error(ScrapingError.COMMON_ERROR.getLogMessage(), caseNumber, e.getLocalizedMessage());
             scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.COMMON_ERROR.getMessage() + e.getLocalizedMessage());
         } catch (InterruptedException e) {
-            log.error(ScrapingError.THREAD_ERROR.getLogMessage(), caseNumber);
-            scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.THREAD_ERROR.getMessage() + e.getLocalizedMessage());
+            log.error(ScrapingError.THREAD_SLEEP_ERROR.getLogMessage(), caseNumber);
+            scrapingResultHandler.skipCaseScraping(scrapingTaskEntity, caseNumber, ScrapingError.THREAD_SLEEP_ERROR.getMessage() + e.getLocalizedMessage());
         }
     }
 

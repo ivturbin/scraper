@@ -1,4 +1,4 @@
-package dev.turbin.scraper.dao;
+package dev.turbin.scraper.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
