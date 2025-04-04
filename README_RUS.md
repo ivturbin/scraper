@@ -51,10 +51,11 @@ nohup sudo java -jar "scraper-{Версия}.jar" &> "$(date +"%Y-%m-%d_%H:%M:%S
 - scraper-{Версия}.jar
 - restart.sh
 
-Запуск:
+Перед запуском обязательно:
 ```
 chmod +x restart.sh
 ```
+Запуск:
 ```
 sudo ./restart.sh
 ```
