@@ -3,7 +3,7 @@
 HOME="{Рабочая директория}"
 
 JAR_PATH="$HOME/scraper-{Версия}.jar"
-LOG_PATH="$HOME/$(date +"%Y-%m-%d_%H:%M:%S")_scraper.log"
+LOG_PATH="$HOME/log/$(date +"%Y-%m-%d_%H:%M:%S").log"
 PID_FILE="$HOME/scraper.pid"
 
 echo ""
