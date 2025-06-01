@@ -1,6 +1,7 @@
 package dev.turbin.scraper.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +22,8 @@ public class DownloadsDirectoryConfig {
     @Bean("downloadsDirectory")
     @ConditionalOnMissingBean(name = "downloadsDirectory")
     @ConditionalOnProperty(prefix = "configuration.download", name = "directory")
-    public String downloadsDirectoryFromProperties() {
-        return withLogging(System.getProperty("configuration.download.directory"));
+    public String downloadsDirectoryFromProperties(@Value("${configuration.download.directory}") String directory) {
+        return withLogging(directory);
     }
 
     @ConditionalOnMissingBean(name = "downloadsDirectory")

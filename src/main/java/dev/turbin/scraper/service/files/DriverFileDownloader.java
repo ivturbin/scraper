@@ -1,5 +1,6 @@
 package dev.turbin.scraper.service.files;
 
+import dev.turbin.scraper.exception.FileDownloadException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
@@ -24,9 +25,9 @@ public class DriverFileDownloader implements FileDownloader {
     private final String downloadsDirectory;
 
     @Override
-    public void download(String fileLink, Long eventId) {
+    public void download(String fileLink, Long eventId) throws FileDownloadException {
         driver.get(fileLink);
-        log.debug("Файл загружен {}", fileLink);
+        log.debug("Файл загружен на диск {}", fileLink);
 
         try {
             Thread.sleep(1000L);
@@ -34,7 +35,7 @@ public class DriverFileDownloader implements FileDownloader {
             throw new RuntimeException(e);
         }
 
-        byte[] fileData = null;
+        byte[] fileData;
 
         String fileName = getFileNameFromLink(fileLink);
         File fileToOpen = new File(downloadsDirectory, fileName);
@@ -44,14 +45,12 @@ public class DriverFileDownloader implements FileDownloader {
 
             try (FileInputStream fileInputStream = new FileInputStream(fileToOpen)) {
                 if (fileInputStream.read(fileData) == fileToOpen.length()) {
-                    log.debug("Файл загружен на диск {}", fileToOpen.getAbsolutePath());
+                    log.debug("Файл прочитан с диска {}", fileToOpen.getAbsolutePath());
                 } else {
-                    fileData = null;
-                    log.error("Ошибка чтения загруженного файла с диска {}", fileToOpen.getAbsolutePath());
+                    throw new FileDownloadException("Ошибка чтения загруженного файла с диска", fileToOpen.getAbsolutePath());
                 }
             } catch (IOException e) {
-                fileData = null;
-                log.error("Ошибка чтения файла: {}", fileToOpen.getAbsolutePath());
+                throw new FileDownloadException("Ошибка чтения файла с диска", fileToOpen.getAbsolutePath());
             } finally {
                 if (fileToOpen.delete()) {
                     log.debug("Файл успешно удален с диска {}", fileToOpen.getAbsolutePath());
@@ -60,19 +59,15 @@ public class DriverFileDownloader implements FileDownloader {
                 }
             }
         } else {
-            log.error("Файл не найден: {}", fileToOpen.getAbsolutePath());
+            throw new FileDownloadException("Файл не найден на диске", fileToOpen.getAbsolutePath());
         }
 
-        if (fileData != null) {
-            caseEventRepository.updateFileDataById(fileData, eventId);
-            log.info("Файл загружен в БД {}", fileName);
-        }
+        caseEventRepository.updateFileDataById(fileData, eventId);
+        log.info("Файл загружен в БД {}", fileName);
     }
 
     private String getFileNameFromLink(String link) {
-        String[] splittedLink = link.split("/");
-        return splittedLink[splittedLink.length-1];
+        String[] splitLink = link.split("/");
+        return splitLink[splitLink.length-1];
     }
-
-
 }

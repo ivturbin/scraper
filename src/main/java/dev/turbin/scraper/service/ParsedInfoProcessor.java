@@ -1,5 +1,7 @@
 package dev.turbin.scraper.service;
 
+import dev.turbin.scraper.enums.EventScrapingCode;
+import dev.turbin.scraper.exception.FileDownloadException;
 import dev.turbin.scraper.service.files.FileDownloader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,33 +50,38 @@ public class ParsedInfoProcessor {
 
             Long caseEventId;
             String parsedFileLink = caseEventEntity.getFileLink();
-            if (eventEntityByHash.isPresent()) {
-                caseEventId = eventEntityByHash.get().getCaseEventId();
-                caseEventEntity.setCaseEventId(caseEventId);
-                caseEventRepository.update(caseEventEntity);
 
-                if (fileLinkIsNotEmpty(parsedFileLink)
-                        && eventEntityByHashNeedsFileUpdate(parsedFileLink, eventEntityByHash.get())
-                ) {
-                    fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
-                }
-            } else {
-                try {
+            try {
+                if (eventEntityByHash.isPresent()) {
+                    caseEventId = eventEntityByHash.get().getCaseEventId();
+                    caseEventEntity.setCaseEventId(caseEventId);
+                    caseEventRepository.update(caseEventEntity);
+
+                    if (fileLinkIsNotEmpty(parsedFileLink)
+                            && eventEntityByHashNeedsFileUpdate(parsedFileLink, eventEntityByHash.get())
+                    ) {
+                        fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
+                    }
+                } else {
                     caseEventId = caseEventRepository.save(caseEventEntity);
-                } catch (Exception e) {
-                    throw new RuntimeException(String.format("Ошибка сохранения ивента %d с хэшем %d: %s",
-                            caseEventEntity.getCaseEventId(), caseEventEntity.getEventHash(), e.getLocalizedMessage()));
+
+                    if (fileLinkIsNotEmpty(parsedFileLink)) {
+                        fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
+                    }
                 }
 
-                if (fileLinkIsNotEmpty(parsedFileLink)) {
-                    fileDownloader.download(caseEventEntity.getFileLink(), caseEventId);
-                }
+                eventScrapingLogRepository.saveEventLog(caseEventEntity, scrapingTaskEntity, EventScrapingCode.OK);
+
+            } catch (FileDownloadException e) {
+                log.error(e.getMessage());
+                parsedInfoModel.getErrorBuilder()
+                        .append("Ошибка загрузки файла у ивента ")
+                        .append(caseEventEntity.getCaseEventId())
+                        .append(". ")
+                        .append(e.getMessage());
+                eventScrapingLogRepository.saveEventLog(caseEventEntity, scrapingTaskEntity, EventScrapingCode.FILE_NOT_DOWNLOADED);
             }
-
-            eventScrapingLogRepository.saveEventLog(caseEventEntity, scrapingTaskEntity);
         }));
-
-
 
         log.info("Дело {} сохранено", parsedInfoModel.getCaseNumber());
 

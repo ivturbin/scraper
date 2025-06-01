@@ -12,7 +12,7 @@ import dev.turbin.scraper.enums.EventScrapingCode;
 public class EventScrapingLogRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public void saveEventLog(CaseEventEntity entity, ScrapingTaskEntity scrapingTaskEntity) {
+    public void saveEventLog(CaseEventEntity entity, ScrapingTaskEntity scrapingTaskEntity, EventScrapingCode eventScrapingCode) {
         String insertSql = "insert into event_scraping_log " +
                 "(event_id, scraping_task_id, code) " +
                 "values (?, ?, ?)";
@@ -20,6 +20,6 @@ public class EventScrapingLogRepository {
         jdbcTemplate.update(insertSql,
                 entity.getCaseEventId(),
                 scrapingTaskEntity.getScrapingTaskId(),
-                EventScrapingCode.OK.name());
+                eventScrapingCode.name());
     }
 }
