@@ -31,7 +31,7 @@ public class ChromeDockerConfig {
         options.addArguments("--disable-gpu");
         options.addArguments("--start-maximized");
         options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage"); //Отключить использование shared memory для chrome, использовать /tmp
+        //options.addArguments("--disable-dev-shm-usage"); //Отключить использование shared memory для chrome, использовать /tmp - WebDriverManagerException: Timeout of 30 seconds creating WebDriver object
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 
         Map<String, Object> chromePrefs = new HashMap<>();
@@ -50,7 +50,7 @@ public class ChromeDockerConfig {
                 .capabilities(options)
                 .browserInDocker()
                 .dockerVolumes(downloadsDirectory + ":" + dockerDownloadsDirectory) //Монтировать директорию загрузок к докер-контейнеру
-                //.dockerShmSize() увеличить shared memory
+                .dockerShmSize("2g") //увеличить shared memory
                 .dockerDefaultArgs("--disable-gpu,--no-sandbox")
                 .enableVnc()
                 .avoidShutdownHook() //Убирает шатдаун хук WebDriverManager, чтобы корректно работал спринговый ApplicationShutdownHook
