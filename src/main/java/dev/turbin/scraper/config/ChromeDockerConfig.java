@@ -30,6 +30,8 @@ public class ChromeDockerConfig {
 
         options.addArguments("--disable-gpu");
         options.addArguments("--start-maximized");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage"); //Отключить использование shared memory для chrome, использовать /tmp
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 
         Map<String, Object> chromePrefs = new HashMap<>();
@@ -48,6 +50,7 @@ public class ChromeDockerConfig {
                 .capabilities(options)
                 .browserInDocker()
                 .dockerVolumes(downloadsDirectory + ":" + dockerDownloadsDirectory) //Монтировать директорию загрузок к докер-контейнеру
+                //.dockerShmSize() увеличить shared memory
                 .dockerDefaultArgs("--disable-gpu,--no-sandbox")
                 .enableVnc()
                 .avoidShutdownHook() //Убирает шатдаун хук WebDriverManager, чтобы корректно работал спринговый ApplicationShutdownHook
